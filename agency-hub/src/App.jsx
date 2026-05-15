@@ -1380,7 +1380,168 @@ const GROUPS=[
 ];
 
 const ALL_ITEMS = GROUPS.flatMap(g=>g.items);
+
+// ─── AI SUGGESTIONS PER SCREEN ───────────────────────────────────
+const AI_SUGGESTIONS = {
+  dashboard:[
+    {type:"alert",icon:"📧",title:"AEON BIG not responding",body:"Proposal viewed 3x but no reply in 3 days. Best time to call: 9–11 AM based on past response pattern.",action:"Draft follow-up"},
+    {type:"insight",icon:"🎯",title:"Win rate below target",body:"38% this month vs your 45% target. Pattern shows proposals over RM 200K have lower close rate. Consider splitting into phases.",action:"View analysis"},
+    {type:"tip",icon:"💡",title:"Pipeline health",body:"3 deals stalled in Negotiation for 7+ days. Deals that stall here historically close 60% less often after 10 days.",action:"View deals"},
+  ],
+  leads:[
+    {type:"alert",icon:"⚡",title:"Jessica Martin — high intent",body:"Score 92. Visited pricing page 4x this week. Best window to call: today before 11AM based on her activity pattern.",action:"Call now"},
+    {type:"insight",icon:"🔍",title:"Referral leads converting 2x better",body:"Your referral leads close at 28% vs 12% for cold calls. Jaya Grocer team came from referral — prioritise them.",action:"See breakdown"},
+    {type:"tip",icon:"📊",title:"5 leads with no follow-up in 7 days",body:"Daniel Lee, Wong Chee and 3 others haven't been contacted. Leads go cold after 5 days — act now.",action:"View leads"},
+  ],
+  brief:[
+    {type:"alert",icon:"⏰",title:"MYDIN brief — deadline in 2 days",body:"Proposal due May 20. Channel team workspace not yet opened. Escalation will trigger automatically in 48 hours.",action:"Notify team"},
+    {type:"insight",icon:"🧠",title:"Similar brief won last quarter",body:"AEON BIG Raya 2025 brief had similar objectives. That proposal achieved RM 280K. Reuse as starting template.",action:"Use template"},
+    {type:"tip",icon:"💬",title:"Decision maker identified",body:"AI detected Andrew Lim (Head of Marketing) as signatory on AEON BIG email. Add him as key contact.",action:"Add contact"},
+  ],
+  proposals:[
+    {type:"alert",icon:"👁️",title:"AEON BIG viewed 3x — not approved",body:"Viewed May 8 at 9:21AM, 2:14PM and May 9 at 10:05AM. Usually signals internal review. Follow up before May 12.",action:"Send follow-up"},
+    {type:"insight",icon:"📈",title:"v3 proposals close 40% faster",body:"Proposals on their 3rd revision historically close faster — client is invested. Push Jaya Grocer to finalise.",action:"View Jaya Grocer"},
+    {type:"tip",icon:"🎨",title:"KK Mart not viewed after 5 days",body:"Proposal sent May 5 — not opened. Try resending with a different subject line or call to confirm receipt.",action:"Resend"},
+  ],
+  pipeline:[
+    {type:"alert",icon:"🚨",title:"3 deals stalled in Negotiation",body:"AEON, KK Mart and MYDIN have had no activity for 7+ days. Deals stalled here close 60% less often after 10 days.",action:"View deals"},
+    {type:"insight",icon:"💰",title:"Close 2 deals this week = hit target",body:"Closing AEON BIG (RM 180K) and MYDIN (RM 150K) would bring you to 102% of monthly target.",action:"Prioritise these"},
+    {type:"tip",icon:"📅",title:"Best closing window: Tue–Wed",body:"Your historical data shows 67% of deals close on Tuesday or Wednesday. Schedule your push calls for tomorrow.",action:"Schedule calls"},
+  ],
+  inventory:[
+    {type:"alert",icon:"🆕",title:"Big Tree sent new rate card",body:"Email received today. 47 new OOH sites — 12 in Penang, 8 in Johor. AI extracting now. Review before booking season.",action:"View extraction"},
+    {type:"insight",icon:"📍",title:"Penang sites — best value right now",body:"Penang OOH currently 30% cheaper than KL equivalents with similar reach. Good for Q3 campaigns.",action:"Filter Penang"},
+    {type:"tip",icon:"🔄",title:"28 sites need availability update",body:"Last updated over 30 days ago. Vendors may have already booked some — confirm before proposing to clients.",action:"Update now"},
+  ],
+  orders:[
+    {type:"alert",icon:"⚠️",title:"AEON BIG Media Order unsigned — 5 days",body:"Vendor slot at ELITE Highway expires May 16. Client must sign by tomorrow or you risk losing the booking.",action:"Chase client"},
+    {type:"nego",icon:"🤖",title:"AI nego suggestion — ELITE Highway",body:"Big Tree quoted RM 18,000. Based on 12 past bookings here, your average paid was RM 14,200. Last time they accepted RM 13,800 (23.3% off). Open at RM 12,000.",stats:[{l:"Vendor quoted",v:"RM 18,000"},{l:"Your avg paid",v:"RM 14,200"},{l:"Best ever",v:"RM 11,500"},{l:"Open at",v:"RM 12,000"},{l:"Walk away",v:"> RM 16,500"}],action:"Use this in nego"},
+    {type:"insight",icon:"💡",title:"Bundle opportunity with Big Tree",body:"You're booking 2 Big Tree sites this month. Adding a 3rd unlocks their 15% bundle rate — saves RM 5,400.",action:"Check availability"},
+  ],
+  creative:[
+    {type:"alert",icon:"👩‍💻",title:"Sarah Lee at 130% capacity",body:"52hrs assigned this week. MYDIN mockup (est. 4hrs) can be reassigned to Farah Lim who has 12hrs free.",action:"Reassign now"},
+    {type:"alert",icon:"📁",title:"KK Mart artwork spec mismatch",body:"Uploaded file is RGB, not CMYK. Vendor requires CMYK. File has been flagged — Creative team notified.",action:"View file"},
+    {type:"tip",icon:"⏱️",title:"ELITE Highway deadline in 3 days",body:"Artwork must reach Big Tree by May 28 for Jun 1 in-charge. Today is May 15 — time is tight.",action:"Check status"},
+  ],
+  execution:[
+    {type:"alert",icon:"🔴",title:"MYDIN — DBP not submitted",body:"In-charge June 5. DBP must be submitted by May 22 (14 days prior). Today is May 15 — 7 days to submit.",action:"Submit now"},
+    {type:"alert",icon:"🟡",title:"KK Mart — artwork not uploaded",body:"In-charge June 10. Artwork needed by May 20 (21 days prior). Creative team has not started.",action:"Brief creative"},
+    {type:"insight",icon:"📊",title:"AEON BIG — proof of play pending",body:"In-charge was June 1. Vendor upload link sent but no photos received yet. Auto-escalation in 3 days.",action:"Chase vendor"},
+  ],
+  timetracker:[
+    {type:"alert",icon:"⚠️",title:"Sarah Lee overloaded",body:"52hrs assigned vs 40hr capacity. Recommend reassigning MYDIN mockup (4hrs) to Farah Lim. Farah has 12hrs available.",action:"Reassign task"},
+    {type:"insight",icon:"💰",title:"Billable hours below target",body:"Team at 72% utilisation. Billable ratio is 58% — target is 70%. 3 staff spending >30% on internal meetings.",action:"View breakdown"},
+    {type:"tip",icon:"🤖",title:"AI time suggestions ready",body:"Based on calendar and files uploaded today, AI has pre-filled 8 time entries for team review. 2 mins to approve.",action:"Review suggestions"},
+  ],
+  invoicing:[
+    {type:"alert",icon:"✅",title:"3 invoices auto-matched",body:"PO-2025-041, PO-2025-039 and PO-2025-038 passed 3-way match. Pushed to AutoCount. No action needed.",action:"View in AutoCount"},
+    {type:"alert",icon:"⚠️",title:"Citylites invoice — 8% variance",body:"Invoiced RM 21,000 vs PO approved RM 19,800. Difference RM 1,200. Finance review required before payment.",action:"Review now"},
+    {type:"tip",icon:"📧",title:"KK Mart invoice not yet received",body:"Campaign ended May 15. Vendor invoice expected within 14 days. Auto-chase will trigger May 29.",action:"Chase vendor"},
+  ],
+  finance:[
+    {type:"alert",icon:"💰",title:"Collection rate below target",body:"57% collected vs 65% target. AEON BIG RM 95K overdue 30 days is the main gap. One call could fix this.",action:"Call AEON BIG"},
+    {type:"insight",icon:"📈",title:"Margin improving",body:"Agency margin at 21.7% — up 2.1pp from last month. AI pricing engine saved an estimated RM 38,000 in vendor costs this month.",action:"See detail"},
+    {type:"tip",icon:"🔄",title:"AutoCount sync — 4 items pending",body:"4 new invoices in system not yet synced to AutoCount. Last sync was 8AM today. Click to sync now.",action:"Sync now"},
+  ],
+  collection:[
+    {type:"alert",icon:"🚨",title:"AEON BIG — 30 days overdue",body:"RM 95,000 unpaid since May 7. Auto-reminders sent 3x. Next step: Director personal outreach or hold new work.",action:"Escalate now"},
+    {type:"insight",icon:"🔄",title:"Retention trigger — MYDIN",body:"Campaign ended successfully. AI suggests scheduling retention call. MYDIN historically re-books within 45 days.",action:"Schedule call"},
+    {type:"tip",icon:"💚",title:"KK Mart — high retention score",body:"Paid on time, only 1 revision round, campaign delivered 115% of promised reach. Prime upsell opportunity.",action:"View upsell ideas"},
+  ],
+  reports:[
+    {type:"insight",icon:"📉",title:"Win rate dropped 5pp",body:"38% this month vs 43% last month. Proposals above RM 200K are closing at only 22%. Consider phased approach.",action:"Analyse deals"},
+    {type:"insight",icon:"🏆",title:"Top performer: Natasha Tan",body:"RM 1.61M revenue, 38% win rate, 65% target achievement. Natasha's proposal style closes 2x faster than team average.",action:"View her proposals"},
+    {type:"tip",icon:"📅",title:"Schedule this report",body:"Get this report delivered to your inbox every Monday 8AM — one click to set up.",action:"Schedule now"},
+  ],
+  owner:[
+    {type:"insight",icon:"🚀",title:"Revenue per head up 33%",body:"Same 8 people generating 33% more revenue than last quarter. Automation is working — 86 hours saved this month alone.",action:"See breakdown"},
+    {type:"alert",icon:"💰",title:"AEON BIG overdue RM 95K",body:"30 days overdue. Collection rate 57% vs target 65%. A director-level call typically resolves within 48 hours.",action:"Make the call"},
+    {type:"insight",icon:"💡",title:"F&B vertical — right time to move",body:"3 restaurant chains in pipeline. Raya season historically drives F&B marketing spend. Window is now.",action:"View prospects"},
+  ],
+};
+
 const SCREENS = {owner:OwnerView,dashboard:Dashboard,leads:Leads,brief:Brief,proposals:Proposals,pipeline:Pipeline,creative:Creative,inventory:Inventory,orders:Orders,execution:Execution,timetracker:TimeTracker,invoicing:Invoicing,finance:Finance,collection:Collection,reports:Reports};
+
+
+// ─── AI ASSISTANT PANEL ───────────────────────────────────────────
+function AiPanel({screen, role, onClose}){
+  const [input, setInput] = useState("");
+  const [chat, setChat] = useState([]);
+  const suggestions = AI_SUGGESTIONS[screen] || AI_SUGGESTIONS.dashboard;
+
+  const send = () => {
+    if(!input.trim()) return;
+    setChat(c=>[...c,{from:"user",text:input},{from:"ai",text:"Got it — let me pull that up for you. This would connect to Claude API in the live system."}]);
+    setInput("");
+  };
+
+  return(
+    <div className="fixed inset-y-0 right-0 z-50 flex flex-col bg-white shadow-2xl border-l border-gray-200" style={{width:"320px",maxWidth:"90vw"}}>
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100" style={{background:"linear-gradient(135deg,#0C1F3F,#1a3060)"}}>
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-lg flex items-center justify-center text-sm" style={{background:"rgba(109,40,217,0.8)"}}>🤖</div>
+          <div><div className="text-white text-sm font-bold">AI Assistant</div><div className="text-white/50 text-xs">Context-aware · {ALL_ITEMS.find(i=>i.id===screen)?.label||"Dashboard"}</div></div>
+        </div>
+        <button onClick={onClose} className="text-white/60 hover:text-white p-1"><X size={16}/></button>
+      </div>
+
+      {/* Suggestions */}
+      <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3">
+        <div className="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">Proactive Insights</div>
+        {suggestions.map((s,i)=>(
+          <div key={i} className={`rounded-xl p-3 border ${s.type==="alert"?"bg-red-50 border-red-100":s.type==="nego"?"bg-purple-50 border-purple-200":s.type==="insight"?"bg-blue-50 border-blue-100":"bg-amber-50 border-amber-100"}`}>
+            <div className="flex items-start gap-2 mb-1.5">
+              <span className="text-base flex-shrink-0">{s.icon}</span>
+              <div className="font-bold text-gray-900 text-xs leading-snug">{s.title}</div>
+            </div>
+            <div className="text-xs text-gray-600 leading-relaxed ml-6 mb-2">{s.body}</div>
+            {s.stats&&(
+              <div className="ml-6 grid grid-cols-2 gap-1 mb-2">
+                {s.stats.map((st,j)=>(
+                  <div key={j} className="bg-white rounded-lg p-1.5">
+                    <div className="text-xs text-gray-400" style={{fontSize:9}}>{st.l}</div>
+                    <div className="text-xs font-black text-purple-700">{st.v}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+            <button className={`ml-6 text-xs font-bold ${s.type==="alert"?"text-red-600":s.type==="nego"?"text-purple-600":s.type==="insight"?"text-blue-600":"text-amber-600"}`}>{s.action} →</button>
+          </div>
+        ))}
+
+        {/* Chat history */}
+        {chat.length>0&&(
+          <div className="mt-2">
+            <div className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Chat</div>
+            {chat.map((m,i)=>(
+              <div key={i} className={`mb-2 flex ${m.from==="user"?"justify-end":""}`}>
+                <div className={`rounded-xl px-3 py-2 text-xs max-w-[85%] ${m.from==="user"?"text-white":"bg-gray-100 text-gray-700"}`} style={m.from==="user"?{background:"#6D28D9"}:{}}>{m.text}</div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Input */}
+      <div className="p-3 border-t border-gray-100">
+        <div className="flex gap-2">
+          <input
+            value={input}
+            onChange={e=>setInput(e.target.value)}
+            onKeyDown={e=>e.key==="Enter"&&send()}
+            placeholder="Ask AI anything..."
+            className="flex-1 text-sm bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 outline-none focus:border-purple-400"
+          />
+          <button onClick={send} className="w-9 h-9 rounded-xl flex items-center justify-center text-white flex-shrink-0" style={{background:"#6D28D9"}}>
+            <Send size={14}/>
+          </button>
+        </div>
+        <div className="text-xs text-gray-400 mt-2 text-center">Powered by Claude AI · Connects to live data</div>
+      </div>
+    </div>
+  );
+}
 
 // ─── APP ──────────────────────────────────────────────────────────
 export default function App(){
@@ -1388,6 +1549,7 @@ export default function App(){
   const [role,     setRole]     = useState("admin");
   const [roleOpen, setRoleOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
+  const [aiOpen,   setAiOpen]   = useState(false);
 
   const currentRole   = ROLES[role];
   const allowed       = currentRole.screens;
@@ -1499,6 +1661,7 @@ export default function App(){
             <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full text-white flex items-center justify-center font-black" style={{background:T.red,fontSize:8}}>3</div>
           </div>
           <button className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm text-white font-bold flex-shrink-0" style={{background:T.purple}}><Plus size={13}/>New</button>
+          <button onClick={()=>setAiOpen(true)} className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-bold border flex-shrink-0" style={{borderColor:"#6D28D9",color:"#6D28D9",background:"#F5F3FF"}}>🤖 <span className="hidden sm:inline">AI</span></button>
           <Av i={currentRole.avatar} c={currentRole.color} s={32}/>
         </div>
 
@@ -1507,7 +1670,10 @@ export default function App(){
           <S go={(id)=>{ if(allowed.includes(id)) setScreen(id); }} role={role}/>
         </div>
 
-        {/* BOTTOM NAV — mobile, role-filtered */}
+        {/* Floating AI button — mobile */}
+        <button onClick={()=>setAiOpen(true)} className="fixed bottom-20 right-4 md:hidden w-12 h-12 rounded-2xl shadow-lg flex items-center justify-center text-xl z-30" style={{background:"linear-gradient(135deg,#6D28D9,#7C3AED)"}}>🤖</button>
+
+        {/* BOTTOM NAV — mobile, role-filtered */}}
         <div className="fixed bottom-0 left-0 right-0 md:hidden bg-white border-t border-gray-200 z-40" style={{paddingBottom:"env(safe-area-inset-bottom)"}}>
           <div className="flex">
             {mobileItems.map(item=>(
@@ -1538,6 +1704,15 @@ export default function App(){
           )}
         </div>
       </div>
+
+      {/* AI Panel overlay */}
+      {aiOpen&&(
+        <>
+          <div className="fixed inset-0 bg-black/20 z-40 md:hidden" onClick={()=>setAiOpen(false)}/>
+          <AiPanel screen={activeScreen} role={role} onClose={()=>setAiOpen(false)}/>
+        </>
+      )}
+
     </div>
   );
 }
