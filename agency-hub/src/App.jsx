@@ -220,47 +220,68 @@ function Brief(){
   );
 }
 
-// ─── SCREEN: PROPOSAL BUILDER ────────────────────────────────────
+
+// ─── SCREEN: PROPOSAL BUILDER (WITH DEMO FLOW) ───────────────────
 function Proposals(){
+  const [demoOpen,setDemoOpen]=useState(false);
+  const [demoStage,setDemoStage]=useState(0);
   const rows=[
-    {title:"AEON BIG – Retail Optimisation Solution",client:"AEON BIG",value:"RM 280K",owner:"Natasha Tan",sent:"May 7",viewed:"Viewed May 8, 9:21AM",stage:"Awaiting Approval",sc:"amber",ver:"v2",c:0},
+    {title:"AEON BIG – Raya 2026 Campaign",client:"AEON BIG",value:"RM 350K",owner:"Natasha Tan",sent:"May 7",viewed:"Viewed May 8, 9:21AM",stage:"Awaiting Approval",sc:"amber",ver:"v2",c:0},
     {title:"MYDIN – Store Operations Transformation",client:"MYDIN",value:"RM 210K",owner:"Jason Doe",sent:"May 6",viewed:"Opened May 6, 4:32PM",stage:"Under Review",sc:"blue",ver:"v1",c:1},
     {title:"KK Mart – Inventory & Demand Planning",client:"KK Mart",value:"RM 160K",owner:"Sarah Lee",sent:"May 5",viewed:"Not Viewed",stage:"Submitted",sc:"purple",ver:"v1",c:2},
     {title:"Jaya Grocer – Pricing Strategy Proposal",client:"Jaya Grocer",value:"RM 190K",owner:"Marcus Tee",sent:"May 3",viewed:"Viewed May 3",stage:"Under Review",sc:"blue",ver:"v3",c:3},
     {title:"AEON BIG – Marketing Partnership",client:"AEON BIG",value:"RM 120K",owner:"Natasha Tan",sent:"May 1",viewed:"Not Viewed",stage:"Draft",sc:"gray",ver:"v1",c:0},
   ];
+
+  const demoStages=[
+    {step:1,label:"Brief Received",dept:"Sales",who:"Natasha Tan",date:"May 1, 9:15AM",detail:"AEON BIG sent Raya 2026 brief via email. AI extracted 10 fields: OOH + Digital + Radio, budget RM 350K, period Apr 1–30, target audience 18–45 urban. Channel team notified automatically.",status:"done",color:T.green},
+    {step:2,label:"Channel Team: Media Selection",dept:"Channel",who:"Jason Doe",date:"May 2, 10:30AM",detail:"Channel team selected 8 media sites from Master Inventory. 3 highway OOH, 2 digital screens, 1 mall LED, 2 radio stations. Creative brief auto-generated for each site.",status:"done",color:T.teal},
+    {step:3,label:"Creative: Superimposed Mockups",dept:"Creative",who:"Sarah Lee",date:"May 3, 2:00PM",detail:"Creative team uploaded superimposed visuals for all 8 sites. Client brand overlaid on actual site photography. 3 design rounds. All mockups attached to proposal.",status:"done",color:T.purple},
+    {step:4,label:"Commercial: Pricing & Availability",dept:"Commercial",who:"Amir Rahman",date:"May 4, 9:00AM",detail:"AI Pricing Engine ran on all 8 items. Big Tree quoted RM 18K for ELITE KM14.2 — AI suggested RM 12K. After negotiation: locked at RM 13,800 (23% off). Total campaign cost secured.",status:"done",color:T.orange},
+    {step:5,label:"Internal Review & Approval",dept:"Manager",who:"Sai (Director)",date:"May 5, 3:00PM",detail:"Director reviewed full proposal. GP calculated at 34.2% — above 30% threshold. Approved without special sign-off. Proposal cleared for client submission.",status:"done",color:T.navy},
+    {step:6,label:"AI Auto-Generates PDF Proposal",dept:"System",who:"AI",date:"May 5, 3:05PM",detail:"Branded PDF proposal auto-generated: cover page, campaign rationale, 8 site details with mockups, reach data, pricing summary, timeline, T&Cs. 14 pages.",status:"done",color:T.teal},
+    {step:7,label:"Proposal Sent to Client",dept:"Sales",who:"Natasha Tan",date:"May 7, 10:00AM",detail:"PDF sent to Andrew Lim (AEON BIG) via Outlook. AI tracking active. Email opened May 8 at 9:21AM. Viewed for 12 minutes. Auto-follow-up reminder set for May 11.",status:"done",color:T.purple},
+    {step:8,label:"Client Revision Request",dept:"Client",who:"Andrew Lim",date:"May 9, 11:00AM",detail:"Client replied: 'Can we swap NST full-page for The Star? Also prefer 40-second radio over 30-second.' AI extracted 2 revision points, tasks auto-created for Channel team. Version incremented to v2.",status:"done",color:T.orange},
+    {step:9,label:"Revised Proposal v2",dept:"Channel",who:"Jason Doe",date:"May 10, 4:00PM",detail:"Swapped NST for The Star (same cost). Radio extended to 40-sec (+RM 8K). Commercial re-confirmed pricing. Director re-approved. New PDF generated and sent.",status:"done",color:T.teal},
+    {step:10,label:"Client Approval",dept:"Client",who:"Andrew Lim",date:"May 11, 2:30PM",detail:"Andrew replied: 'Looks great, we'd like to proceed.' AI detected approval keywords. Deal moved to Won. Media Order workflow triggered automatically. Natasha notified.",status:demoStage>=9?"done":"active",color:T.green},
+    {step:11,label:"Media Order → PO → Execution",dept:"Sales → Commercial",who:"Auto-triggered",date:"Pending",detail:"Sales to generate Media Order for client signature. Once signed, Commercial raises PO to vendors. Artwork job sheet auto-created. Execution module activated.",status:demoStage>=10?"done":"pending",color:T.navy},
+  ];
+
   return(
     <div className="flex flex-col gap-4">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <Kpi icon={<FileText size={18}/>} label="Drafts" value="12" color={T.purple} sub="↓8% vs last 7 days"/>
+        <Kpi icon={<FileText size={18}/>} label="Drafts" value="12" color={T.purple} sub="↓8% vs 7d"/>
         <Kpi icon={<Send size={18}/>} label="Sent" value="18" delta="↑20%" up color={T.teal} sub="vs last 7 days"/>
-        <Kpi icon={<Eye size={18}/>} label="Awaiting Approval" value="6" color={T.orange} sub="↑2 vs last 7 days"/>
-        <Kpi icon={<Award size={18}/>} label="Won from Proposal" value="RM 1.21M" delta="↑18%" up color={T.green} sub="vs last 7 days"/>
+        <Kpi icon={<Eye size={18}/>} label="Awaiting Approval" value="6" color={T.orange} sub="↑2 vs 7d"/>
+        <Kpi icon={<Award size={18}/>} label="Won from Proposal" value="RM 1.21M" delta="↑18%" up color={T.green}/>
       </div>
-      {/* Workflow */}
-      <Card className="p-4">
-        <div className="font-bold text-gray-900 mb-3">Proposal Workflow — 11 Steps</div>
-        <div className="flex flex-wrap gap-2">
-          {["Brief Received","Select Inventory","Creative Brief","Commercial Pricing","Creative Mockups","Internal Review","PDF Generated","Send to Client","Client Reviews","Revisions","Client Approval"].map((s,i)=>(
-            <div key={s} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold ${i<3?"bg-green-100 text-green-700":i<7?"bg-purple-100 text-purple-700":"bg-gray-100 text-gray-500"}`}><span className="w-4 h-4 rounded-full flex items-center justify-center text-white font-black text-xs flex-shrink-0" style={{background:i<3?T.green:i<7?T.purple:T.textLight,fontSize:9}}>{i+1}</span>{s}</div>
-          ))}
+
+      {/* Demo Proposal Banner */}
+      <div className="rounded-2xl p-4 flex items-center gap-4" style={{background:"linear-gradient(135deg,#0C1F3F,#1a3060)",border:"1px solid rgba(109,40,217,0.3)"}}>
+        <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0" style={{background:"rgba(109,40,217,0.3)"}}>🎬</div>
+        <div className="flex-1">
+          <div className="text-white font-black text-sm">Demo: AEON BIG Raya 2026 — Full Proposal Journey</div>
+          <div className="text-white/50 text-xs mt-0.5">Watch one proposal go through all 11 stages from brief to approval</div>
         </div>
-      </Card>
+        <button onClick={()=>setDemoOpen(true)} className="px-4 py-2 rounded-xl text-xs font-bold text-white flex-shrink-0" style={{background:T.purple}}>View Demo →</button>
+      </div>
+
       <div className="flex items-center gap-2 flex-wrap">
-        {[{l:"Create Proposal",c:T.purple},{l:"Duplicate",c:T.teal},{l:"Send for Approval",c:T.orange},{l:"Export PDF",c:T.green}].map(a=>(
-          <button key={a.l} className="px-4 py-2 rounded-xl text-sm text-white font-bold" style={{background:a.c}}>{a.l}</button>
+        {["Create Proposal","Duplicate","Send for Approval","Export PDF"].map(a=>(
+          <button key={a} className="px-4 py-2 rounded-xl text-sm font-bold text-white" style={{background:a==="Create Proposal"?T.purple:a==="Duplicate"?T.teal:a==="Send for Approval"?T.orange:T.green}}>{a}</button>
         ))}
         <div className="flex items-center gap-2 bg-gray-50 rounded-xl px-3 py-2 ml-auto"><Search size={13} className="text-gray-400"/><input className="bg-transparent text-sm outline-none" placeholder="Search proposals..."/></div>
       </div>
+
       <Card>
         <div className="hidden md:block overflow-x-auto">
           <table className="w-full">
             <thead><tr className="border-b border-gray-100">{["","Title","Client","Value","Owner","Sent","Viewed","Version","Stage",""].map(h=><th key={h} className="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase whitespace-nowrap">{h}</th>)}</tr></thead>
             <tbody className="divide-y divide-gray-50">
               {rows.map((r,i)=>(
-                <tr key={i} className="hover:bg-purple-50/20 cursor-pointer">
+                <tr key={i} className="hover:bg-purple-50/20 cursor-pointer" onClick={()=>r.title.includes("Raya 2026")&&setDemoOpen(true)}>
                   <td className="px-4 py-3"><div className="w-10 h-8 rounded-lg bg-gradient-to-br from-purple-100 to-indigo-100 flex items-center justify-center text-xs font-black text-purple-400">PDF</div></td>
-                  <td className="px-4 py-3 text-sm font-semibold text-gray-800 whitespace-nowrap max-w-xs truncate">{r.title}</td>
+                  <td className="px-4 py-3"><div className="text-sm font-semibold text-gray-800 whitespace-nowrap max-w-xs truncate">{r.title}</div>{r.title.includes("Raya 2026")&&<div className="text-xs text-purple-500 font-semibold">👆 Click to see full journey</div>}</td>
                   <td className="px-4 py-3"><div className="flex items-center gap-2"><Av i={r.client.slice(0,2)} c={COLORS[r.c]} s={24}/><span className="text-sm text-gray-600 whitespace-nowrap">{r.client}</span></div></td>
                   <td className="px-4 py-3 text-sm font-black text-gray-900 whitespace-nowrap">{r.value}</td>
                   <td className="px-4 py-3 text-sm text-gray-600 whitespace-nowrap">{r.owner}</td>
@@ -268,7 +289,7 @@ function Proposals(){
                   <td className="px-4 py-3"><span className={`text-xs font-semibold flex items-center gap-1 whitespace-nowrap ${r.viewed.includes("Not")?"text-gray-400":"text-green-600"}`}><Eye size={11}/>{r.viewed}</span></td>
                   <td className="px-4 py-3"><span className="bg-indigo-100 text-indigo-700 text-xs font-bold px-2 py-0.5 rounded-full">{r.ver}</span></td>
                   <td className="px-4 py-3"><Bdg t={r.stage} c={r.sc}/></td>
-                  <td className="px-4 py-3 text-gray-400 cursor-pointer hover:text-gray-600">⋯</td>
+                  <td className="px-4 py-3 text-gray-400 cursor-pointer">⋯</td>
                 </tr>
               ))}
             </tbody>
@@ -276,17 +297,497 @@ function Proposals(){
         </div>
         <div className="md:hidden divide-y divide-gray-50">
           {rows.map((r,i)=>(
-            <div key={i} className="p-4 flex gap-3">
+            <div key={i} className="p-4 flex gap-3 cursor-pointer" onClick={()=>r.title.includes("Raya 2026")&&setDemoOpen(true)}>
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-100 to-indigo-100 flex items-center justify-center text-xs font-black text-purple-400 flex-shrink-0">PDF</div>
               <div className="flex-1 min-w-0">
                 <div className="text-sm font-bold text-gray-900 truncate">{r.title}</div>
-                <div className="text-xs text-gray-500">{r.client} · {r.value} · {r.owner}</div>
+                <div className="text-xs text-gray-500">{r.client} · {r.value}</div>
                 <div className="flex items-center gap-2 mt-1.5"><Bdg t={r.stage} c={r.sc}/><span className="bg-indigo-100 text-indigo-700 text-xs font-bold px-2 py-0.5 rounded-full">{r.ver}</span></div>
               </div>
             </div>
           ))}
         </div>
       </Card>
+
+      {/* Demo Modal */}
+      {demoOpen&&(
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl w-full max-w-2xl shadow-2xl max-h-[90vh] flex flex-col overflow-hidden">
+            <div className="flex items-center justify-between p-5 border-b border-gray-100 flex-shrink-0">
+              <div>
+                <div className="font-black text-gray-900 text-lg">AEON BIG — Raya 2026</div>
+                <div className="text-sm text-gray-500">Complete proposal journey · 11 stages</div>
+              </div>
+              <button onClick={()=>setDemoOpen(false)} className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center hover:bg-gray-200"><X size={15}/></button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-5">
+              {/* Progress bar */}
+              <div className="flex items-center gap-1 mb-5 overflow-x-auto pb-2">
+                {demoStages.map((s,i)=>(
+                  <div key={i} onClick={()=>setDemoStage(i)} className="flex flex-col items-center gap-1 cursor-pointer flex-shrink-0">
+                    <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-black transition-all" style={{background:i<demoStage?s.color:i===demoStage?s.color:"#E5E7EB",color:i<=demoStage?"#fff":"#9CA3AF"}}>
+                      {i<demoStage?"✓":i+1}
+                    </div>
+                    {i<demoStages.length-1&&<div className="w-6 h-0.5 hidden"/>}
+                  </div>
+                ))}
+              </div>
+              {/* Current stage detail */}
+              <div className="rounded-2xl p-5" style={{background:demoStages[demoStage].color+"10",border:`1.5px solid ${demoStages[demoStage].color}30`}}>
+                <div className="flex items-start gap-3 mb-3">
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-black text-sm flex-shrink-0" style={{background:demoStages[demoStage].color}}>{demoStages[demoStage].step}</div>
+                  <div className="flex-1">
+                    <div className="font-black text-gray-900 text-base">{demoStages[demoStage].label}</div>
+                    <div className="flex items-center gap-3 mt-1 flex-wrap">
+                      <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{background:demoStages[demoStage].color+"20",color:demoStages[demoStage].color}}>{demoStages[demoStage].dept}</span>
+                      <span className="text-xs text-gray-400">👤 {demoStages[demoStage].who}</span>
+                      <span className="text-xs text-gray-400">📅 {demoStages[demoStage].date}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="text-sm text-gray-700 leading-relaxed bg-white rounded-xl p-4">{demoStages[demoStage].detail}</div>
+              </div>
+              {/* All stages list */}
+              <div className="mt-5 flex flex-col gap-2">
+                {demoStages.map((s,i)=>(
+                  <div key={i} onClick={()=>setDemoStage(i)} className="flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all" style={{background:i===demoStage?s.color+"10":"#F8FAFC",border:`1px solid ${i===demoStage?s.color+"40":"transparent"}`}}>
+                    <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-black flex-shrink-0" style={{background:i<=demoStage?s.color:"#E5E7EB",color:i<=demoStage?"#fff":"#9CA3AF"}}>{i<demoStage?"✓":i+1}</div>
+                    <span className="text-sm font-semibold text-gray-700 flex-1">{s.label}</span>
+                    <span className="text-xs text-gray-400 flex-shrink-0">{s.dept}</span>
+                    <span className={`text-xs font-bold flex-shrink-0 ${i<demoStage?"text-green-500":i===demoStage?"text-purple-500":"text-gray-300"}`}>{i<demoStage?"Done":i===demoStage?"Active":"Pending"}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="p-4 border-t border-gray-100 flex gap-3 flex-shrink-0">
+              <button onClick={()=>setDemoStage(s=>Math.max(0,s-1))} disabled={demoStage===0} className="px-5 py-2.5 rounded-xl font-bold text-sm border border-gray-200 text-gray-600 disabled:opacity-30">← Prev</button>
+              <button onClick={()=>setDemoStage(s=>Math.min(demoStages.length-1,s+1))} disabled={demoStage===demoStages.length-1} className="flex-1 py-2.5 rounded-xl font-bold text-sm text-white" style={{background:T.purple}}>Next Stage →</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── 100 INVENTORY ITEMS ─────────────────────────────────────────
+const ALL_INVENTORY = [
+  // HIGHWAY OOH
+  {id:"BTO-ELITE-001",vendor:"Big Tree",name:"ELITE Highway KM 14.2 Northbound",cat:"OOH",type:"Billboard",loc:"Subang, Selangor",state:"Selangor",size:"40×20ft",reach:"120K/day",rate:18000,status:"Available"},
+  {id:"BTO-PLUS-002",vendor:"Big Tree",name:"PLUS Highway KM 287 Northbound",cat:"OOH",type:"Unipole",loc:"Rawang, Selangor",state:"Selangor",size:"30×15ft",reach:"95K/day",rate:14000,status:"Available"},
+  {id:"BTO-AKLEH-003",vendor:"Big Tree",name:"AKLEH KM 8.5 Southbound",cat:"OOH",type:"Unipole",loc:"Ampang, KL",state:"KL",size:"30×15ft",reach:"85K/day",rate:12000,status:"Booked"},
+  {id:"BTO-NPE-004",vendor:"Big Tree",name:"NPE KM 3.2 Westbound",cat:"OOH",type:"Billboard",loc:"Kepong, KL",state:"KL",size:"40×20ft",reach:"78K/day",rate:11000,status:"Available"},
+  {id:"BTO-LDP-005",vendor:"Big Tree",name:"LDP KM 9.8 Eastbound",cat:"OOH",type:"Billboard",loc:"Damansara, Selangor",state:"Selangor",size:"40×20ft",reach:"105K/day",rate:15000,status:"Available"},
+  {id:"BTO-SPRINT-006",vendor:"Big Tree",name:"SPRINT Highway KM 5.1",cat:"OOH",type:"Unipole",loc:"Cheras, KL",state:"KL",size:"25×12ft",reach:"72K/day",rate:9500,status:"Available"},
+  {id:"BTO-DUKE-007",vendor:"Big Tree",name:"DUKE Highway KM 11.3",cat:"OOH",type:"Billboard",loc:"Setapak, KL",state:"KL",size:"40×20ft",reach:"68K/day",rate:10000,status:"On Hold"},
+  {id:"BTO-KESAS-008",vendor:"Big Tree",name:"KESAS Highway KM 17.5",cat:"OOH",type:"Billboard",loc:"Shah Alam, Selangor",state:"Selangor",size:"40×20ft",reach:"88K/day",rate:13000,status:"Available"},
+  {id:"BTO-MEX-009",vendor:"Big Tree",name:"MEX Highway KM 4.2",cat:"OOH",type:"Unipole",loc:"Seri Kembangan, Selangor",state:"Selangor",size:"30×15ft",reach:"62K/day",rate:8500,status:"Available"},
+  {id:"BTO-SILK-010",vendor:"Big Tree",name:"SILK Highway KM 8.0",cat:"OOH",type:"Billboard",loc:"Kajang, Selangor",state:"Selangor",size:"40×20ft",reach:"55K/day",rate:8000,status:"Available"},
+  // PENANG OOH
+  {id:"ANG-E1-011",vendor:"Angsana",name:"Penang Bridge Approach NB",cat:"OOH",type:"Billboard",loc:"Butterworth, Penang",state:"Penang",size:"40×20ft",reach:"80K/day",rate:12000,status:"Available"},
+  {id:"ANG-E2-012",vendor:"Angsana",name:"Gurney Drive Billboard",cat:"OOH",type:"Billboard",loc:"Georgetown, Penang",state:"Penang",size:"30×15ft",reach:"65K/day",rate:9500,status:"Available"},
+  {id:"ANG-E3-013",vendor:"Angsana",name:"Bayan Lepas Highway",cat:"OOH",type:"Unipole",loc:"Bayan Lepas, Penang",state:"Penang",size:"25×12ft",reach:"58K/day",rate:7500,status:"Booked"},
+  // JOHOR OOH
+  {id:"JHR-001-014",vendor:"CityAds",name:"Lebuhraya JB KM 12",cat:"OOH",type:"Billboard",loc:"Johor Bahru, Johor",state:"Johor",size:"40×20ft",reach:"90K/day",rate:13500,status:"Available"},
+  {id:"JHR-002-015",vendor:"CityAds",name:"JB City Centre Unipole",cat:"OOH",type:"Unipole",loc:"Johor Bahru, Johor",state:"Johor",size:"30×15ft",reach:"75K/day",rate:10500,status:"Available"},
+  // IPOH OOH
+  {id:"IPH-001-016",vendor:"NorthAds",name:"Ipoh Parade Facing",cat:"OOH",type:"Billboard",loc:"Ipoh, Perak",state:"Perak",size:"30×15ft",reach:"45K/day",rate:6500,status:"Available"},
+  {id:"IPH-002-017",vendor:"NorthAds",name:"PLUS Highway Ipoh KM 190",cat:"OOH",type:"Unipole",loc:"Ipoh, Perak",state:"Perak",size:"25×12ft",reach:"52K/day",rate:7000,status:"Available"},
+  // DIGITAL OOH - KL
+  {id:"CIT-LED-018",vendor:"Citylites",name:"Bangsar LED Screen 1920×1080",cat:"Digital OOH",type:"LED",loc:"Bangsar, KL",state:"KL",size:"1920×1080px",reach:"60K/day",rate:25000,status:"Available"},
+  {id:"CIT-LED-019",vendor:"Citylites",name:"Bukit Bintang LED Tower",cat:"Digital OOH",type:"LED",loc:"Bukit Bintang, KL",state:"KL",size:"2560×1440px",reach:"85K/day",rate:38000,status:"Available"},
+  {id:"CIT-LED-020",vendor:"Citylites",name:"KLCC Podium Screen",cat:"Digital OOH",type:"LED",loc:"KLCC, KL",state:"KL",size:"1920×1080px",reach:"110K/day",rate:45000,status:"Booked"},
+  {id:"CIT-LED-021",vendor:"Citylites",name:"Mont Kiara Digital Billboard",cat:"Digital OOH",type:"LED",loc:"Mont Kiara, KL",state:"KL",size:"1280×720px",reach:"42K/day",rate:18000,status:"Available"},
+  {id:"CIT-LED-022",vendor:"Citylites",name:"Damansara Uptown Digital",cat:"Digital OOH",type:"LED",loc:"Damansara, Selangor",state:"Selangor",size:"1920×1080px",reach:"55K/day",rate:22000,status:"Available"},
+  // MALL SCREENS
+  {id:"PAV-001-023",vendor:"Pavilion Media",name:"Pavilion KL Entrance Screen",cat:"Digital OOH",type:"Mall Screen",loc:"Bukit Bintang, KL",state:"KL",size:"4096×2160px",reach:"150K/day",rate:55000,status:"Available"},
+  {id:"PAV-002-024",vendor:"Pavilion Media",name:"Pavilion KL Lobby Pillar ×4",cat:"Digital OOH",type:"Mall Screen",loc:"Bukit Bintang, KL",state:"KL",size:"1080×1920px",reach:"120K/day",rate:30000,status:"Available"},
+  {id:"MV-001-025",vendor:"IGB Media",name:"Mid Valley Concourse Screen",cat:"Digital OOH",type:"Mall Screen",loc:"Mid Valley, KL",state:"KL",size:"3840×2160px",reach:"180K/day",rate:62000,status:"Booked"},
+  {id:"MV-002-026",vendor:"IGB Media",name:"The Gardens Mall Atrium",cat:"Digital OOH",type:"Mall Screen",loc:"Mid Valley, KL",state:"KL",size:"2560×1440px",reach:"95K/day",rate:35000,status:"Available"},
+  {id:"SW-001-027",vendor:"Sunway Media",name:"Sunway Pyramid Main Entrance",cat:"Digital OOH",type:"Mall Screen",loc:"Petaling Jaya, Selangor",state:"Selangor",size:"3840×2160px",reach:"160K/day",rate:52000,status:"Available"},
+  {id:"SW-002-028",vendor:"Sunway Media",name:"Sunway Pyramid Ice Rink Facing",cat:"Digital OOH",type:"Mall Screen",loc:"Petaling Jaya, Selangor",state:"Selangor",size:"1920×1080px",reach:"85K/day",rate:28000,status:"Available"},
+  {id:"IOI-001-029",vendor:"IOI Properties",name:"IOI City Mall Grand Atrium",cat:"Digital OOH",type:"Mall Screen",loc:"Putrajaya, Selangor",state:"Selangor",size:"2560×1440px",reach:"120K/day",rate:40000,status:"Available"},
+  {id:"UTM-001-030",vendor:"Ikano Media",name:"1 Utama Main Court Screen",cat:"Digital OOH",type:"Mall Screen",loc:"Petaling Jaya, Selangor",state:"Selangor",size:"3840×2160px",reach:"140K/day",rate:48000,status:"On Hold"},
+  // TRANSIT / MRT
+  {id:"MRT-001-031",vendor:"Rapid Media",name:"Bukit Bintang MRT Station",cat:"Transit",type:"Station Screen",loc:"Bukit Bintang, KL",state:"KL",size:"1080×1920px",reach:"95K/day",rate:20000,status:"Available"},
+  {id:"MRT-002-032",vendor:"Rapid Media",name:"KLCC MRT Concourse",cat:"Transit",type:"Station Screen",loc:"KLCC, KL",state:"KL",size:"1080×1920px",reach:"110K/day",rate:24000,status:"Available"},
+  {id:"MRT-003-033",vendor:"Rapid Media",name:"Muzium Negara MRT Platform ×6",cat:"Transit",type:"Platform Screen",loc:"Muzium Negara, KL",state:"KL",size:"1080×1920px",reach:"72K/day",rate:16000,status:"Available"},
+  {id:"LRT-001-034",vendor:"Rapid Media",name:"Masjid Jamek LRT Interchange",cat:"Transit",type:"Station Screen",loc:"Masjid Jamek, KL",state:"KL",size:"1920×1080px",reach:"88K/day",rate:18500,status:"Booked"},
+  {id:"LRT-002-035",vendor:"Rapid Media",name:"Kelana Jaya LRT Station",cat:"Transit",type:"Station Screen",loc:"Kelana Jaya, Selangor",state:"Selangor",size:"1080×1920px",reach:"65K/day",rate:14000,status:"Available"},
+  {id:"BUS-001-036",vendor:"Rapid Media",name:"RapidKL Bus Wrap ×10 Units",cat:"Transit",type:"Bus Wrap",loc:"Klang Valley",state:"Selangor",size:"Full wrap",reach:"500K/week",rate:22000,status:"Available"},
+  // PRINT
+  {id:"NST-001-037",vendor:"Media Prima",name:"New Straits Times Full Page",cat:"Print",type:"Newspaper",loc:"National",state:"National",size:"A4 Full Page",reach:"200K/day",rate:45000,status:"Available"},
+  {id:"NST-002-038",vendor:"Media Prima",name:"New Straits Times Half Page",cat:"Print",type:"Newspaper",loc:"National",state:"National",size:"A4 Half Page",reach:"200K/day",rate:25000,status:"Available"},
+  {id:"STAR-001-039",vendor:"Star Media",name:"The Star Full Page",cat:"Print",type:"Newspaper",loc:"National",state:"National",size:"A4 Full Page",reach:"350K/day",rate:55000,status:"Available"},
+  {id:"STAR-002-040",vendor:"Star Media",name:"The Star Half Page",cat:"Print",type:"Newspaper",loc:"National",state:"National",size:"A4 Half Page",reach:"350K/day",rate:30000,status:"Available"},
+  {id:"BH-001-041",vendor:"Media Prima",name:"Berita Harian Full Page",cat:"Print",type:"Newspaper",loc:"National",state:"National",size:"A4 Full Page",reach:"180K/day",rate:38000,status:"Available"},
+  {id:"HM-001-042",vendor:"Harian Metro",name:"Harian Metro Full Page",cat:"Print",type:"Newspaper",loc:"National",state:"National",size:"Tabloid Full Page",reach:"420K/day",rate:48000,status:"Available"},
+  {id:"KCH-001-043",vendor:"Sarawak Media",name:"See Hua Daily KCH Full Page",cat:"Print",type:"Newspaper",loc:"Kuching, Sarawak",state:"Sarawak",size:"Broadsheet",reach:"85K/day",rate:18000,status:"Available"},
+  {id:"MAG-001-044",vendor:"Blu Inc",name:"Her World Malaysia Full Page",cat:"Print",type:"Magazine",loc:"National",state:"National",size:"A4 Full Page",reach:"75K/issue",rate:28000,status:"Available"},
+  {id:"MAG-002-045",vendor:"Blu Inc",name:"Men's Health Malaysia",cat:"Print",type:"Magazine",loc:"National",state:"National",size:"A4 Full Page",reach:"55K/issue",rate:22000,status:"Available"},
+  // RADIO
+  {id:"HOT-001-046",vendor:"Media Prima Radio",name:"HOT FM 30sec Primetime ×28",cat:"Radio",type:"Radio Spot",loc:"National",state:"National",size:"30sec × 28 spots",reach:"3.2M listeners",rate:42000,status:"Available"},
+  {id:"HOT-002-047",vendor:"Media Prima Radio",name:"HOT FM 60sec Drive Time ×14",cat:"Radio",type:"Radio Spot",loc:"National",state:"National",size:"60sec × 14 spots",reach:"3.2M listeners",rate:35000,status:"Available"},
+  {id:"ERA-001-048",vendor:"Media Prima Radio",name:"ERA FM 30sec Primetime ×28",cat:"Radio",type:"Radio Spot",loc:"National",state:"National",size:"30sec × 28 spots",reach:"2.8M listeners",rate:38000,status:"Available"},
+  {id:"MYF-001-049",vendor:"Astro Radio",name:"MY FM 30sec Primetime ×28",cat:"Radio",type:"Radio Spot",loc:"National",state:"National",size:"30sec × 28 spots",reach:"2.1M listeners",rate:32000,status:"Available"},
+  {id:"FLY-001-050",vendor:"Astro Radio",name:"FLY FM 30sec Drive Time ×14",cat:"Radio",type:"Radio Spot",loc:"National",state:"National",size:"30sec × 14 spots",reach:"1.5M listeners",rate:22000,status:"Available"},
+  {id:"SIN-001-051",vendor:"Astro Radio",name:"SINAR FM 30sec ×28",cat:"Radio",type:"Radio Spot",loc:"National",state:"National",size:"30sec × 28 spots",reach:"2.4M listeners",rate:35000,status:"Available"},
+  {id:"XFM-001-052",vendor:"Astro Radio",name:"988 FM 30sec ×14",cat:"Radio",type:"Radio Spot",loc:"National",state:"National",size:"30sec × 14 spots",reach:"1.2M listeners",rate:18000,status:"Available"},
+  // TV
+  {id:"TV3-001-053",vendor:"Media Prima TV",name:"TV3 Primetime 30sec ×7",cat:"TV",type:"TV Spot",loc:"National",state:"National",size:"30sec × 7 spots",reach:"4.5M viewers",rate:85000,status:"Available"},
+  {id:"TV3-002-054",vendor:"Media Prima TV",name:"TV3 News Hour 30sec ×7",cat:"TV",type:"TV Spot",loc:"National",state:"National",size:"30sec × 7 spots",reach:"3.8M viewers",rate:72000,status:"Available"},
+  {id:"NTV7-001-055",vendor:"Media Prima TV",name:"NTV7 Primetime 30sec ×7",cat:"TV",type:"TV Spot",loc:"National",state:"National",size:"30sec × 7 spots",reach:"2.2M viewers",rate:48000,status:"Available"},
+  {id:"8TV-001-056",vendor:"Media Prima TV",name:"8TV Primetime 30sec ×7",cat:"TV",type:"TV Spot",loc:"National",state:"National",size:"30sec × 7 spots",reach:"1.8M viewers",rate:38000,status:"Available"},
+  {id:"AST-001-057",vendor:"Astro",name:"Astro Ria 30sec Primetime ×7",cat:"TV",type:"TV Spot",loc:"National",state:"National",size:"30sec × 7 spots",reach:"3.5M viewers",rate:65000,status:"Available"},
+  {id:"AST-002-058",vendor:"Astro",name:"Astro Awani 30sec ×14",cat:"TV",type:"TV Spot",loc:"National",state:"National",size:"30sec × 14 spots",reach:"2.8M viewers",rate:55000,status:"Booked"},
+  // OUTDOOR KOTA KINABALU
+  {id:"KK-001-059",vendor:"Sabah Outdoor",name:"KK City Centre Unipole",cat:"OOH",type:"Unipole",loc:"Kota Kinabalu, Sabah",state:"Sabah",size:"25×12ft",reach:"38K/day",rate:5500,status:"Available"},
+  {id:"KK-002-060",vendor:"Sabah Outdoor",name:"KKIA Airport Approach",cat:"OOH",type:"Billboard",loc:"Kota Kinabalu, Sabah",state:"Sabah",size:"30×15ft",reach:"45K/day",rate:7000,status:"Available"},
+  // KUCHING
+  {id:"KCH-002-061",vendor:"Sarawak Outdoor",name:"Kuching Waterfront Billboard",cat:"OOH",type:"Billboard",loc:"Kuching, Sarawak",state:"Sarawak",size:"30×15ft",reach:"32K/day",rate:5000,status:"Available"},
+  // LIGHTBOX / INDOOR
+  {id:"AIR-001-062",vendor:"JCD",name:"KLIA2 Arrival Hall Lightbox ×4",cat:"OOH",type:"Lightbox",loc:"KLIA2, Selangor",state:"Selangor",size:"2×1m each",reach:"85K/day",rate:32000,status:"Available"},
+  {id:"AIR-002-063",vendor:"JCD",name:"KLIA Main Terminal Faces ×6",cat:"OOH",type:"Lightbox",loc:"KLIA, Selangor",state:"Selangor",size:"2×1m each",reach:"110K/day",rate:48000,status:"Booked"},
+  {id:"AIR-003-064",vendor:"JCD",name:"Penang Airport Departures ×4",cat:"OOH",type:"Lightbox",loc:"Penang Airport",state:"Penang",size:"2×1m each",reach:"28K/day",rate:16000,status:"Available"},
+  // PETROL STATION
+  {id:"PET-001-065",vendor:"AdPetro",name:"Shell KESAS Petrol Screen ×5",cat:"Digital OOH",type:"Petrol Screen",loc:"Shah Alam, Selangor",state:"Selangor",size:"32in screens",reach:"8K/day",rate:4500,status:"Available"},
+  {id:"PET-002-066",vendor:"AdPetro",name:"Petronas PLUS Rest Area KM180",cat:"OOH",type:"Billboard",loc:"PLUS Rest Area",state:"Selangor",size:"20×10ft",reach:"22K/day",rate:5000,status:"Available"},
+  // ROADSIDE / CITY OOH
+  {id:"JCD-001-067",vendor:"JCD",name:"Jalan Tuanku Abdul Halim",cat:"OOH",type:"Billboard",loc:"KL City, KL",state:"KL",size:"20×10ft",reach:"55K/day",rate:12000,status:"Available"},
+  {id:"JCD-002-068",vendor:"JCD",name:"Jalan Maharajalela Billboard",cat:"OOH",type:"Billboard",loc:"KL City, KL",state:"KL",size:"20×10ft",reach:"48K/day",rate:10500,status:"Available"},
+  {id:"JCD-003-069",vendor:"JCD",name:"Lorong Haji Taib Digital",cat:"Digital OOH",type:"LED",loc:"Chow Kit, KL",state:"KL",size:"1280×720px",reach:"35K/day",rate:8500,status:"Available"},
+  {id:"OCT-001-070",vendor:"Ocean Outdoor",name:"Jalan Ampang Corner LED",cat:"Digital OOH",type:"LED",loc:"Ampang, KL",state:"KL",size:"1920×1080px",reach:"72K/day",rate:28000,status:"Available"},
+  {id:"OCT-002-071",vendor:"Ocean Outdoor",name:"Jalan Imbi Giant Screen",cat:"Digital OOH",type:"LED",loc:"Imbi, KL",state:"KL",size:"3072×1728px",reach:"90K/day",rate:42000,status:"Available"},
+  // COMMUNITY MALL
+  {id:"AEO-001-072",vendor:"AEON Media",name:"AEON Mall Shah Alam Entrance",cat:"Digital OOH",type:"Mall Screen",loc:"Shah Alam, Selangor",state:"Selangor",size:"1920×1080px",reach:"65K/day",rate:16000,status:"Available"},
+  {id:"AEO-002-073",vendor:"AEON Media",name:"AEON Tebrau City Screen",cat:"Digital OOH",type:"Mall Screen",loc:"Johor Bahru, Johor",state:"Johor",size:"1920×1080px",reach:"72K/day",rate:18000,status:"Available"},
+  {id:"AEO-003-074",vendor:"AEON Media",name:"AEON Seremban 2 Atrium",cat:"Digital OOH",type:"Mall Screen",loc:"Seremban, Negeri Sembilan",state:"NS",size:"1280×720px",reach:"42K/day",rate:10000,status:"Available"},
+  {id:"MCM-001-075",vendor:"Mitsui Media",name:"Mitsui Outlet Park KLIA Screen",cat:"Digital OOH",type:"Mall Screen",loc:"Sepang, Selangor",state:"Selangor",size:"1920×1080px",reach:"55K/day",rate:14000,status:"Available"},
+  // SPORTS VENUE
+  {id:"SPT-001-076",vendor:"Stadium Negara",name:"National Stadium Perimeter ×8",cat:"OOH",type:"Stadium Board",loc:"Bukit Jalil, KL",state:"KL",size:"3×1m each",reach:"50K/match",rate:28000,status:"Available"},
+  {id:"SPT-002-077",vendor:"Stadium Negara",name:"Axiata Arena Fascia LED",cat:"Digital OOH",type:"Arena Screen",loc:"Bukit Jalil, KL",state:"KL",size:"Full fascia",reach:"12K/event",rate:18000,status:"Available"},
+  // FABRICATION
+  {id:"FAB-001-078",vendor:"Printmaster",name:"Pull-Up Banner Fabric 85×200cm",cat:"Fabrication",type:"Standee",loc:"Malaysia",state:"National",size:"85×200cm",reach:"Per unit",rate:180,status:"Available"},
+  {id:"FAB-002-079",vendor:"Printmaster",name:"X-Banner 60×160cm",cat:"Fabrication",type:"Standee",loc:"Malaysia",state:"National",size:"60×160cm",reach:"Per unit",rate:120,status:"Available"},
+  {id:"FAB-003-080",vendor:"Printmaster",name:"Foam Board 60×90cm",cat:"Fabrication",type:"Display",loc:"Malaysia",state:"National",size:"60×90cm",reach:"Per unit",rate:95,status:"Available"},
+  {id:"FAB-004-081",vendor:"Signcraft",name:"Acrylic Signage 1×0.5m",cat:"Fabrication",type:"Signage",loc:"Malaysia",state:"National",size:"1×0.5m",reach:"Per unit",rate:350,status:"Available"},
+  {id:"FAB-005-082",vendor:"Signcraft",name:"Canvas Banner 3×1m",cat:"Fabrication",type:"Banner",loc:"Malaysia",state:"National",size:"3×1m",reach:"Per unit",rate:220,status:"Available"},
+  // DIGITAL
+  {id:"DIG-001-083",vendor:"Google",name:"Google Display Network — National",cat:"Digital",type:"Programmatic",loc:"National",state:"National",size:"Various formats",reach:"5M impressions",rate:8500,status:"Available"},
+  {id:"DIG-002-084",vendor:"Meta",name:"Facebook + Instagram — National",cat:"Digital",type:"Social Media",loc:"National",state:"National",size:"1080×1080px",reach:"3M reach",rate:12000,status:"Available"},
+  {id:"DIG-003-085",vendor:"TikTok",name:"TikTok In-Feed Ads — National",cat:"Digital",type:"Social Media",loc:"National",state:"National",size:"1080×1920px",reach:"2.5M reach",rate:9500,status:"Available"},
+  {id:"DIG-004-086",vendor:"YouTube",name:"YouTube Pre-roll — National",cat:"Digital",type:"Video",loc:"National",state:"National",size:"15-30sec video",reach:"4M impressions",rate:15000,status:"Available"},
+  // SELANGOR ADDITIONAL
+  {id:"SEL-001-087",vendor:"Media Outdoor",name:"Shah Alam City Centre Billboard",cat:"OOH",type:"Billboard",loc:"Shah Alam, Selangor",state:"Selangor",size:"30×15ft",reach:"55K/day",rate:8000,status:"Available"},
+  {id:"SEL-002-088",vendor:"Media Outdoor",name:"Subang Jaya Commercial Area",cat:"OOH",type:"Billboard",loc:"Subang Jaya, Selangor",state:"Selangor",size:"20×10ft",reach:"42K/day",rate:6500,status:"Available"},
+  {id:"SEL-003-089",vendor:"Media Outdoor",name:"Puchong IOI Facing",cat:"OOH",type:"Unipole",loc:"Puchong, Selangor",state:"Selangor",size:"25×12ft",reach:"38K/day",rate:5500,status:"Available"},
+  {id:"SEL-004-090",vendor:"Media Outdoor",name:"Klang Parade Billboard",cat:"OOH",type:"Billboard",loc:"Klang, Selangor",state:"Selangor",size:"30×15ft",reach:"45K/day",rate:7000,status:"Available"},
+  // CINEMA
+  {id:"CIN-001-091",vendor:"GSC Media",name:"GSC Mid Valley 30sec Pre-show ×7days",cat:"Cinema",type:"Cinema Screen",loc:"Mid Valley, KL",state:"KL",size:"4K cinema screen",reach:"12K/week",rate:18000,status:"Available"},
+  {id:"CIN-002-092",vendor:"TGV Media",name:"TGV KLCC 30sec Pre-show ×7days",cat:"Cinema",type:"Cinema Screen",loc:"KLCC, KL",state:"KL",size:"4K cinema screen",reach:"9K/week",rate:14000,status:"Available"},
+  {id:"CIN-003-093",vendor:"MBO Media",name:"MBO Cinemas 30sec Nationwide ×7",cat:"Cinema",type:"Cinema Screen",loc:"National",state:"National",size:"4K cinema screen",reach:"45K/week",rate:42000,status:"Available"},
+  // ELEVATOR
+  {id:"ELV-001-094",vendor:"Altel Media",name:"KLCC Twin Tower Elevator LCD",cat:"Digital OOH",type:"Elevator Screen",loc:"KLCC, KL",state:"KL",size:"42in screens ×8",reach:"15K/day",rate:12000,status:"Available"},
+  {id:"ELV-002-095",vendor:"Altel Media",name:"Mid Valley Office Tower Elevator",cat:"Digital OOH",type:"Elevator Screen",loc:"Mid Valley, KL",state:"KL",size:"42in screens ×6",reach:"8K/day",rate:8000,status:"Available"},
+  // CONVENIENCE STORE
+  {id:"CNV-001-096",vendor:"7-Eleven Media",name:"7-Eleven Checkout Screen KL ×50",cat:"Digital OOH",type:"Convenience Screen",loc:"KL & Selangor",state:"KL",size:"15in screens",reach:"25K/day",rate:9500,status:"Available"},
+  {id:"CNV-002-097",vendor:"myNEWS Media",name:"myNEWS Store Screen ×30",cat:"Digital OOH",type:"Convenience Screen",loc:"KL & Selangor",state:"KL",size:"15in screens",reach:"15K/day",rate:5500,status:"Available"},
+  // EAST MALAYSIA
+  {id:"MRI-001-098",vendor:"Miri Outdoor",name:"Miri City Billboard",cat:"OOH",type:"Billboard",loc:"Miri, Sarawak",state:"Sarawak",size:"20×10ft",reach:"18K/day",rate:3500,status:"Available"},
+  {id:"SDK-001-099",vendor:"Sandakan Ads",name:"Sandakan Town Centre",cat:"OOH",type:"Billboard",loc:"Sandakan, Sabah",state:"Sabah",size:"20×10ft",reach:"15K/day",rate:3000,status:"Available"},
+  {id:"TTU-001-100",vendor:"Tawau Media",name:"Tawau Central Unipole",cat:"OOH",type:"Unipole",loc:"Tawau, Sabah",state:"Sabah",size:"15×8ft",reach:"12K/day",rate:2500,status:"Available"},
+];
+
+// ─── SCREEN: MASTER INVENTORY ─────────────────────────────────────
+function Inventory(){
+  const [tab,setTab]=useState("media");
+  const [search,setSearch]=useState("");
+  const [catFilter,setCatFilter]=useState("All");
+  const [stateFilter,setStateFilter]=useState("All");
+  const [page,setPage]=useState(0);
+  const PER_PAGE=15;
+
+  const cats=["All",...new Set(ALL_INVENTORY.map(i=>i.cat))];
+  const states=["All",...new Set(ALL_INVENTORY.map(i=>i.state))];
+
+  const filtered=ALL_INVENTORY.filter(i=>{
+    const matchSearch=!search||i.name.toLowerCase().includes(search.toLowerCase())||i.vendor.toLowerCase().includes(search.toLowerCase())||i.loc.toLowerCase().includes(search.toLowerCase());
+    const matchCat=catFilter==="All"||i.cat===catFilter;
+    const matchState=stateFilter==="All"||i.state===stateFilter;
+    return matchSearch&&matchCat&&matchState;
+  });
+
+  const paginated=filtered.slice(page*PER_PAGE,(page+1)*PER_PAGE);
+  const totalPages=Math.ceil(filtered.length/PER_PAGE);
+
+  return(
+    <div className="flex flex-col gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <Kpi icon={<Package size={18}/>} label="Total Inventory" value="100" color={T.purple} sub="sites standardised"/>
+        <Kpi icon={<CheckCircle size={18}/>} label="Available" value={ALL_INVENTORY.filter(i=>i.status==="Available").length} color={T.green} sub="ready to book"/>
+        <Kpi icon={<Activity size={18}/>} label="Booked" value={ALL_INVENTORY.filter(i=>i.status==="Booked").length} color={T.orange} sub="currently active"/>
+        <Kpi icon={<AlertTriangle size={18}/>} label="On Hold" value={ALL_INVENTORY.filter(i=>i.status==="On Hold").length} color={T.amber} sub="pending confirmation"/>
+      </div>
+
+      {/* AI Extraction */}
+      <Card className="p-4">
+        <div className="flex items-center gap-3 mb-3"><span className="text-lg">🤖</span><div><div className="font-bold text-gray-900">AI Extraction Pipeline</div><div className="text-xs text-gray-500">Upload any vendor PDF or PPT — AI standardises into Master Inventory automatically</div></div></div>
+        <div className="flex flex-wrap gap-2 items-center">
+          <div className="flex items-center gap-2 flex-1 min-w-[200px] border-2 border-dashed border-purple-200 rounded-xl px-4 py-3 bg-purple-50 cursor-pointer hover:bg-purple-100">
+            <Upload size={16} className="text-purple-500"/><span className="text-sm text-purple-600 font-semibold">Drop vendor PDF or PPT here to extract</span>
+          </div>
+          {["Upload","Convert","AI Extract","Preview","Save"].map((s,i)=>(
+            <div key={s} className="flex items-center gap-1">
+              <div className={`px-3 py-1.5 rounded-lg text-xs font-bold ${i<2?"bg-green-100 text-green-700":"bg-gray-100 text-gray-500"}`}>{s}</div>
+              {i<4&&<ChevronRight size={12} className="text-gray-300"/>}
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {/* Filters */}
+      <div className="flex gap-2 flex-wrap items-center">
+        <div className="flex items-center gap-2 bg-white rounded-xl px-3 py-2 border border-gray-200 flex-1 min-w-[180px]"><Search size={13} className="text-gray-400"/><input className="bg-transparent text-sm outline-none flex-1" placeholder={`Search ${ALL_INVENTORY.length} inventory items...`} value={search} onChange={e=>{setSearch(e.target.value);setPage(0);}}/></div>
+        <select value={catFilter} onChange={e=>{setCatFilter(e.target.value);setPage(0);}} className="px-3 py-2 rounded-xl border border-gray-200 text-sm bg-white outline-none text-gray-600">
+          {cats.map(c=><option key={c}>{c}</option>)}
+        </select>
+        <select value={stateFilter} onChange={e=>{setStateFilter(e.target.value);setPage(0);}} className="px-3 py-2 rounded-xl border border-gray-200 text-sm bg-white outline-none text-gray-600">
+          {states.map(s=><option key={s}>{s}</option>)}
+        </select>
+        <span className="text-xs text-gray-400 font-semibold">{filtered.length} items</span>
+      </div>
+
+      <Card>
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead><tr className="border-b border-gray-100">{["ID","Vendor","Name","Cat","Type","Location","Size","Reach","Rate/mo","Status",""].map(h=><th key={h} className="text-left px-3 py-3 text-xs font-semibold text-gray-400 uppercase whitespace-nowrap">{h}</th>)}</tr></thead>
+            <tbody className="divide-y divide-gray-50">
+              {paginated.map((m,i)=>(
+                <tr key={i} className="hover:bg-gray-50 cursor-pointer">
+                  <td className="px-3 py-2.5 text-xs font-mono text-gray-400 whitespace-nowrap">{m.id}</td>
+                  <td className="px-3 py-2.5 text-xs text-gray-600 whitespace-nowrap">{m.vendor}</td>
+                  <td className="px-3 py-2.5 text-xs font-semibold text-gray-900 max-w-[200px] truncate">{m.name}</td>
+                  <td className="px-3 py-2.5"><Bdg t={m.cat} c={m.cat==="OOH"?"purple":m.cat==="Digital OOH"?"teal":m.cat==="Print"?"blue":m.cat==="Radio"?"orange":m.cat==="TV"?"red":m.cat==="Transit"?"amber":"gray"}/></td>
+                  <td className="px-3 py-2.5 text-xs text-gray-500 whitespace-nowrap">{m.type}</td>
+                  <td className="px-3 py-2.5 text-xs text-gray-500 whitespace-nowrap">{m.loc}</td>
+                  <td className="px-3 py-2.5 text-xs font-mono text-gray-500 whitespace-nowrap">{m.size}</td>
+                  <td className="px-3 py-2.5 text-xs text-gray-600 whitespace-nowrap">{m.reach}</td>
+                  <td className="px-3 py-2.5 text-xs font-black text-gray-900 whitespace-nowrap">{m.rate>=1000?`RM ${m.rate.toLocaleString()}`:m.rate>0?`RM ${m.rate}/unit`:"—"}</td>
+                  <td className="px-3 py-2.5"><Bdg t={m.status} c={m.status==="Available"?"green":m.status==="Booked"?"orange":"amber"}/></td>
+                  <td className="px-3 py-2.5"><button className="text-xs text-purple-600 font-semibold hover:underline whitespace-nowrap">+ Add to Proposal</button></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {/* Pagination */}
+        <div className="flex items-center justify-between px-4 py-3 border-t border-gray-100">
+          <span className="text-xs text-gray-400">Showing {page*PER_PAGE+1}–{Math.min((page+1)*PER_PAGE,filtered.length)} of {filtered.length}</span>
+          <div className="flex gap-2">
+            <button disabled={page===0} onClick={()=>setPage(p=>p-1)} className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-gray-200 text-gray-600 disabled:opacity-30 hover:bg-gray-50">← Prev</button>
+            {[...Array(Math.min(totalPages,5))].map((_,i)=>{
+              const pg=page<=2?i:page>=totalPages-3?totalPages-5+i:page-2+i;
+              return pg>=0&&pg<totalPages?<button key={pg} onClick={()=>setPage(pg)} className="w-8 h-8 rounded-lg text-xs font-semibold border" style={pg===page?{background:T.purple,color:"#fff",border:`1px solid ${T.purple}`}:{background:"#fff",color:"#475569",border:"1px solid #E2E8F0"}}>{pg+1}</button>:null;
+            })}
+            <button disabled={page>=totalPages-1} onClick={()=>setPage(p=>p+1)} className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-gray-200 text-gray-600 disabled:opacity-30 hover:bg-gray-50">Next →</button>
+          </div>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+// ─── SCREEN: MEDIA ORDER & PO (AI PREDICTIVE PRICING) ─────────────
+function Orders({role="admin"}){
+  const canSeeCost=["admin","commercial","finance"].includes(role);
+  const canSeePO=["admin","commercial","finance"].includes(role);
+  const [selectedSite,setSelectedSite]=useState(0);
+  const [negoPrice,setNegoPrice]=useState(13800);
+  const [clientBilled,setClientBilled]=useState(23000);
+  const [showPricing,setShowPricing]=useState(false);
+
+  const sites=[
+    {id:"BTO-ELITE-001",name:"ELITE Highway KM14.2 NB",vendor:"Big Tree",type:"Billboard 40×20ft",reach:"120K/day",rateCard:18000,
+     history:[{period:"Mar 2025",paid:13800,disc:23.3},{period:"Nov 2024",paid:14200,disc:21.1},{period:"Jul 2024",paid:15000,disc:16.7},{period:"Mar 2024",paid:14800,disc:17.8},{period:"Nov 2023",paid:15500,disc:13.9}],
+     prediction:{min:12000,likely:13500,max:16000,confidence:87,pattern:"Vendor accepts 20-25% off on repeat bookings. Q4 season premium ~15%."}},
+    {id:"BTO-LDP-005",name:"LDP KM9.8 Eastbound",vendor:"Big Tree",type:"Billboard 40×20ft",reach:"105K/day",rateCard:15000,
+     history:[{period:"Apr 2025",paid:11200,disc:25.3},{period:"Dec 2024",paid:11800,disc:21.3},{period:"Aug 2024",paid:12500,disc:16.7}],
+     prediction:{min:10500,likely:11500,max:14000,confidence:81,pattern:"Consistent 20-25% discount achievable. Peak season adds ~10%."}},
+    {id:"CIT-LED-018",name:"Bangsar LED Screen",vendor:"Citylites",type:"Digital LED 1920×1080px",reach:"60K/day",rateCard:25000,
+     history:[{period:"Feb 2025",paid:19500,disc:22.0},{period:"Oct 2024",paid:20000,disc:20.0},{period:"Jun 2024",paid:21000,disc:16.0}],
+     prediction:{min:18000,likely:19500,max:23000,confidence:79,pattern:"Digital inventory less flexible. 18-22% typical. Bundle with other Citylites sites for better rate."}},
+  ];
+
+  const site=sites[selectedSite];
+  const gpPct=clientBilled>0?((clientBilled-negoPrice)/clientBilled*100):0;
+  const gpRM=clientBilled-negoPrice;
+  const gpColor=gpPct>=40?T.green:gpPct>=30?T.amber:T.red;
+  const maxHist=Math.max(...site.history.map(h=>h.paid),site.rateCard);
+
+  const orders=[
+    {ref:"MO-2025-041",client:"AEON BIG",campaign:"Raya 2026 OOH",value:"RM 350,000",issued:"May 7",status:"Signed",c:0},
+    {ref:"MO-2025-040",client:"MYDIN",campaign:"Mid-Year Sale Digital",value:"RM 180,000",issued:"May 6",status:"Awaiting Signature",c:1},
+    {ref:"MO-2025-039",client:"KK Mart",campaign:"Store Launch Billboard",value:"RM 95,000",issued:"May 5",status:"Signed",c:2},
+  ];
+
+  return(
+    <div className="flex flex-col gap-4">
+      {!canSeeCost&&(
+        <div className="bg-blue-50 border border-blue-200 rounded-2xl p-4 flex items-center gap-3">
+          <span className="text-xl flex-shrink-0">ℹ️</span>
+          <div><div className="font-bold text-blue-900 text-sm">Sales View — Media Orders Only</div><div className="text-sm text-blue-700">You can create and manage Company Media Orders for client signature. Vendor costs and AI pricing are handled by the Commercial team.</div></div>
+        </div>
+      )}
+
+      <div className="bg-red-50 border border-red-200 rounded-2xl p-4 flex items-center gap-3">
+        <span className="text-xl flex-shrink-0">🔒</span>
+        <div><div className="font-bold text-red-800 text-sm">System Rule — Enforced</div><div className="text-sm text-red-700">Purchase Order to any media owner CANNOT be created until Company Media Order is signed by client.</div></div>
+      </div>
+
+      {canSeePO&&(
+        <>
+          {/* AI PREDICTIVE PRICING */}
+          <Card className="overflow-hidden">
+            <div className="flex items-center justify-between p-4 border-b border-gray-100">
+              <div className="flex items-center gap-2"><span className="text-lg">🤖</span><div><div className="font-bold text-gray-900">AI Predictive Pricing Engine</div><div className="text-xs text-gray-400">Select a site to see AI-powered negotiation intelligence</div></div></div>
+              <Bdg t="Commercial Only" c="purple"/>
+            </div>
+            {/* Site selector */}
+            <div className="flex gap-2 p-4 pb-0 overflow-x-auto">
+              {sites.map((s,i)=>(
+                <button key={i} onClick={()=>{setSelectedSite(i);setNegoPrice(Math.round(s.history[0].paid));}} className="flex-shrink-0 px-3 py-2 rounded-xl text-xs font-bold border-2 transition-all" style={{borderColor:selectedSite===i?T.purple:"#E2E8F0",background:selectedSite===i?T.purple+"10":"#fff",color:selectedSite===i?T.purple:"#6B7280"}}>
+                  {s.name.split(" ").slice(0,3).join(" ")}
+                </button>
+              ))}
+            </div>
+            <div className="p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Inventory Detail */}
+              <div className="rounded-2xl p-4" style={{background:"#0C1F3F"}}>
+                <div className="text-xs font-bold uppercase tracking-widest text-white/30 mb-1">Inventory Detail</div>
+                <div className="text-xs text-white/40 mb-3">{site.id} · {site.vendor}</div>
+                <div className="text-base font-black text-white mb-4 leading-snug">{site.name}</div>
+                {[{l:"Type",v:site.type},{l:"Reach",v:site.reach},{l:"Rate Card",v:`RM ${site.rateCard.toLocaleString()}/mo`}].map(f=>(
+                  <div key={f.l} className="flex justify-between items-center py-2 border-b border-white/10 last:border-0">
+                    <span className="text-xs text-white/40">{f.l}</span>
+                    <span className="text-xs font-bold text-white">{f.v}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* AI Pricing */}
+              <div className="rounded-2xl p-4" style={{background:"#0C1F3F"}}>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="text-xs font-bold uppercase tracking-widest text-white/30">AI Pricing Engine</div>
+                  <div className="text-xs font-bold px-2 py-0.5 rounded text-teal-400 border border-teal-400/30 bg-teal-400/10">{site.prediction.confidence}% confidence</div>
+                </div>
+                <div className="flex flex-col gap-2 mb-3">
+                  {[{l:"Vendor Quoted",v:`RM ${site.rateCard.toLocaleString()}`,c:"text-white"},{l:"Historical Avg",v:`RM ${Math.round(site.history.reduce((a,h)=>a+h.paid,0)/site.history.length).toLocaleString()}`,c:"text-blue-300"},{l:"Best Ever",v:`RM ${Math.min(...site.history.map(h=>h.paid)).toLocaleString()}`,c:"text-green-400"},{l:"Fair Range",v:`RM ${site.prediction.min.toLocaleString()} – ${site.prediction.likely.toLocaleString()}`,c:"text-teal-300"}].map(r=>(
+                    <div key={r.l} className="flex justify-between"><span className="text-xs text-white/40">{r.l}</span><span className={`text-xs font-bold ${r.c}`}>{r.v}</span></div>
+                  ))}
+                </div>
+                <div className="rounded-lg p-2.5 mb-2" style={{background:"rgba(0,212,170,0.1)",border:"1px solid rgba(0,212,170,0.4)"}}>
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs font-bold text-teal-400">🎯 Suggested open</span>
+                    <span className="text-sm font-black text-teal-400">RM {site.prediction.min.toLocaleString()}</span>
+                  </div>
+                </div>
+                <div className="flex justify-between mb-3"><span className="text-xs text-white/40">Walk away above</span><span className="text-xs font-bold text-red-400">RM {site.prediction.max.toLocaleString()}</span></div>
+                <div className="text-xs text-white/30 italic leading-relaxed">{site.prediction.pattern}</div>
+              </div>
+
+              {/* GP Calculator + Booking History */}
+              <div className="flex flex-col gap-3">
+                {/* GP Calculator */}
+                <div className="rounded-2xl p-4" style={{background:"#0C1F3F",flex:1}}>
+                  <div className="text-xs font-bold uppercase tracking-widest text-white/30 mb-3">GP Calculator</div>
+                  <div className="mb-3">
+                    <div className="text-xs text-white/40 mb-1">Client billed (Media Order)</div>
+                    <input type="number" value={clientBilled} onChange={e=>{setClientBilled(Number(e.target.value));}} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white font-bold outline-none" style={{fontFamily:"inherit"}}/>
+                  </div>
+                  <div className="mb-3">
+                    <div className="flex justify-between text-xs text-white/40 mb-1"><span>Nego price</span><span style={{color:"#00D4AA"}}>RM {negoPrice.toLocaleString()}</span></div>
+                    <input type="range" min={site.prediction.min} max={site.rateCard} step={100} value={negoPrice} onChange={e=>setNegoPrice(Number(e.target.value))} className="w-full" style={{accentColor:"#00D4AA"}}/>
+                    <div className="flex justify-between text-xs text-white/30 mt-1"><span>RM {site.prediction.min.toLocaleString()}</span><span>RM {site.rateCard.toLocaleString()}</span></div>
+                  </div>
+                  <div className="rounded-xl p-3 text-center mb-2" style={{background:`rgba(${gpPct>=40?"22,163,74":gpPct>=30?"215,119,6":"220,38,38"},0.1)`,border:`1px solid rgba(${gpPct>=40?"22,163,74":gpPct>=30?"215,119,6":"220,38,38"},0.3)`}}>
+                    <div className="text-2xl font-black" style={{color:gpColor}}>{gpPct.toFixed(1)}%</div>
+                    <div className="text-xs mt-0.5" style={{color:gpColor,opacity:0.7}}>Gross Profit · RM {gpRM.toLocaleString()}</div>
+                  </div>
+                  {gpPct<30&&gpPct>0&&(
+                    <div className="rounded-xl p-3" style={{background:"rgba(220,38,38,0.1)",border:"1px solid rgba(220,38,38,0.3)"}}>
+                      <div className="text-xs font-bold text-red-400 flex items-center gap-1"><AlertTriangle size={11}/>Special Approval Required</div>
+                      <div className="text-xs text-red-300/70 mt-1">GP below 30%. Director sign-off needed before PO can be raised.</div>
+                      <button className="w-full mt-2 py-1.5 rounded-lg text-xs font-bold text-red-400 border border-red-400/30 bg-transparent" style={{fontFamily:"inherit"}}>Request Approval →</button>
+                    </div>
+                  )}
+                  {gpPct>=40&&<div className="text-xs text-green-400/70 text-center">✅ Healthy margin — good to proceed</div>}
+                  {gpPct>=30&&gpPct<40&&<div className="text-xs text-amber-400/70 text-center">⚠️ Acceptable — negotiate harder</div>}
+                </div>
+
+                {/* Booking history mini */}
+                <div className="rounded-2xl p-4" style={{background:"#0C1F3F"}}>
+                  <div className="text-xs font-bold uppercase tracking-widest text-white/30 mb-2">Booking History</div>
+                  {site.history.map((h,i)=>(
+                    <div key={i} className="flex items-center gap-2 mb-1.5">
+                      <span className="text-xs text-white/30 w-20 flex-shrink-0">{h.period}</span>
+                      <div className="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden">
+                        <div style={{width:(h.paid/maxHist*100)+"%",background:"#00D4AA",height:"100%",borderRadius:9}}/>
+                      </div>
+                      <span className="text-xs font-bold text-white w-20 text-right">RM {h.paid.toLocaleString()}</span>
+                      <span className="text-xs text-green-400 w-10 text-right">-{h.disc}%</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </Card>
+        </>
+      )}
+
+      {/* Media Orders */}
+      <div className={`grid grid-cols-1 ${canSeePO?"md:grid-cols-2":""} gap-4`}>
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center justify-between"><h3 className="font-black text-gray-900">📄 Company Media Orders</h3><button className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm text-white font-bold" style={{background:T.purple}}><Plus size={13}/>Generate</button></div>
+          <div className="text-xs text-gray-500 bg-blue-50 border border-blue-100 rounded-xl px-3 py-2">Created by Sales · Signed by Client · Sent via Outlook · AI detects signed copy in email</div>
+          {orders.map((o,i)=>(
+            <Card key={i} className="p-4">
+              <div className="flex items-start justify-between gap-2">
+                <div><div className="flex items-center gap-2"><span className="text-xs font-mono text-gray-400">{o.ref}</span><Bdg t={o.status} c={o.status==="Signed"?"green":"amber"}/></div><div className="text-sm font-bold text-gray-900 mt-1">{o.client} — {o.campaign}</div><div className="text-xs text-gray-500 mt-0.5">Issued {o.issued}</div></div>
+                <div className="text-right flex-shrink-0"><div className="text-base font-black text-gray-900">{o.value}</div></div>
+              </div>
+              {o.status==="Awaiting Signature"&&<div className="mt-3 bg-amber-50 border border-amber-200 rounded-xl p-2 flex items-center gap-2"><span className="text-sm">⏳</span><span className="text-xs text-amber-700 font-semibold">Waiting for client signature. PO locked until signed.</span></div>}
+              {o.status==="Signed"&&<div className="mt-3 bg-green-50 border border-green-200 rounded-xl p-2 flex items-center gap-2"><span className="text-sm">✅</span><span className="text-xs text-green-700 font-semibold">{canSeePO?"Signed. Commercial team may now raise PO.":"Signed. Commercial team notified to proceed with booking."}</span></div>}
+            </Card>
+          ))}
+        </div>
+
+        {canSeePO&&(
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center justify-between"><h3 className="font-black text-gray-900">🛒 Purchase Orders <span className="text-xs font-normal text-gray-400 ml-1">(Commercial only)</span></h3><button className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm text-white font-bold" style={{background:T.teal}}><Plus size={13}/>Raise PO</button></div>
+            <div className="text-xs text-gray-500 bg-teal-50 border border-teal-100 rounded-xl px-3 py-2">Created by Commercial · Sent to Media Owner · Unlocked only after MO signed · AI Pricing shown above</div>
+            {[{ref:"PO-2025-041A",vendor:"Big Tree",mo:"MO-2025-041",items:"ELITE KM14 (1 month)",quoted:"RM 18,000",nego:"RM 13,800",saving:"23.3%",status:"Sent",c:0},{ref:"PO-2025-041B",vendor:"Citylites",mo:"MO-2025-041",items:"Bangsar LED (1 month)",quoted:"RM 25,000",nego:"RM 19,500",saving:"22.0%",status:"Approved",c:1},{ref:"PO-2025-039",vendor:"Big Tree",mo:"MO-2025-039",items:"Klang Unipole (2 months)",quoted:"RM 24,000",nego:"RM 18,500",saving:"22.9%",status:"Pending Approval",c:2}].map((p,i)=>(
+              <Card key={i} className="p-4">
+                <div className="flex items-start justify-between gap-2 mb-3"><div><div className="flex items-center gap-2"><span className="text-xs font-mono text-gray-400">{p.ref}</span><Bdg t={p.status} c={p.status==="Sent"?"blue":p.status==="Approved"?"green":"amber"}/></div><div className="text-sm font-bold text-gray-900 mt-1">{p.vendor} — {p.items}</div><div className="text-xs text-gray-400 mt-0.5">Linked to {p.mo}</div></div></div>
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="bg-gray-50 rounded-lg p-2 text-center"><div className="text-xs text-gray-400">Vendor Rate</div><div className="text-sm font-black text-gray-700">{p.quoted}</div></div>
+                  <div className="bg-green-50 rounded-lg p-2 text-center"><div className="text-xs text-gray-400">Negotiated</div><div className="text-sm font-black text-green-700">{p.nego}</div></div>
+                  <div className="bg-purple-50 rounded-lg p-2 text-center"><div className="text-xs text-gray-400">Saving</div><div className="text-sm font-black text-purple-700">{p.saving}</div></div>
+                </div>
+              </Card>
+            ))}
+            {["admin","finance"].includes(role)&&(
+              <Card className="p-4 border-2 border-amber-200 bg-amber-50">
+                <div className="flex items-center gap-2 mb-3"><span className="text-lg">💰</span><span className="font-bold text-amber-900">Agency Margin</span><Bdg t="Admin & Finance only" c="amber"/></div>
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="bg-white rounded-xl p-3 text-center"><div className="text-xs text-gray-400">Client Billed</div><div className="text-base font-black text-gray-900">RM 350,000</div></div>
+                  <div className="bg-white rounded-xl p-3 text-center"><div className="text-xs text-gray-400">Vendor Cost</div><div className="text-base font-black text-gray-700">RM 230,000</div></div>
+                  <div className="bg-white rounded-xl p-3 text-center border-2 border-green-200"><div className="text-xs text-gray-400">Margin</div><div className="text-base font-black text-green-700">RM 120K</div><div className="text-xs text-green-600 font-bold">34.3%</div></div>
+                </div>
+              </Card>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -430,234 +931,6 @@ function Creative(){
           </Card>
         </>
       )}
-    </div>
-  );
-}
-
-// ─── SCREEN: MASTER INVENTORY ─────────────────────────────────────
-function Inventory(){
-  const [tab,setTab]=useState("media");
-  const media=[
-    {id:"BTO-ELITE-KL-001",vendor:"Big Tree",name:"ELITE Highway KM14.2 NB",cat:"OOH",type:"Billboard",loc:"Selangor",size:"40x20ft",reach:"120K/day",rate:"RM 18,000",status:"Available"},
-    {id:"BTO-AKLEH-KL-002",vendor:"Big Tree",name:"AKLEH KM 8.5 Southbound",cat:"OOH",type:"Unipole",loc:"KL",size:"30x15ft",reach:"85K/day",rate:"RM 12,000",status:"Booked"},
-    {id:"LED-BSR-001",vendor:"Citylites",name:"Bangsar LED Screen",cat:"Digital OOH",type:"LED",loc:"KL",size:"1920x1080px",reach:"60K/day",rate:"RM 25,000",status:"Available"},
-    {id:"PRINT-NST-001",vendor:"Media Prima",name:"NST Full Page",cat:"Print",type:"Newspaper",loc:"National",size:"A4",reach:"200K/day",rate:"RM 45,000",status:"Available"},
-  ];
-  const physical=[
-    {vendor:"Printmaster",name:"Pull-Up Banner — Fabric",cat:"Standee",dims:"85x200cm",cost:"RM 180/unit",moq:"10",lead:"5 days",stock:"50"},
-    {vendor:"Signcraft",name:"Foam Board Display",cat:"Display",dims:"60x90cm",cost:"RM 95/unit",moq:"20",lead:"3 days",stock:"120"},
-    {vendor:"Fabrica",name:"Custom Printed T-Shirt",cat:"Merchandise",dims:"All sizes",cost:"RM 35/unit",moq:"50",lead:"7 days",stock:"200"},
-  ];
-  return(
-    <div className="flex flex-col gap-4">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <Kpi icon={<Package size={18}/>} label="Media Inventory" value="1,248" color={T.purple} sub="sites standardised"/>
-        <Kpi icon={<Package size={18}/>} label="Physical Items" value="84" color={T.teal} sub="fabrication items"/>
-        <Kpi icon={<CheckCircle size={18}/>} label="Available" value="891" color={T.green} sub="ready to book"/>
-        <Kpi icon={<AlertTriangle size={18}/>} label="Booked" value="357" color={T.orange} sub="currently active"/>
-      </div>
-      {/* AI Extraction */}
-      <Card className="p-4">
-        <div className="flex items-center gap-3 mb-3"><span className="text-lg">🤖</span><div><div className="font-bold text-gray-900">AI Extraction Pipeline</div><div className="text-xs text-gray-500">Upload any vendor PDF or PPT — AI standardises into Master Inventory automatically</div></div></div>
-        <div className="flex flex-wrap gap-2 items-center">
-          <div className="flex items-center gap-2 flex-1 min-w-[200px] border-2 border-dashed border-purple-200 rounded-xl px-4 py-3 bg-purple-50 cursor-pointer hover:bg-purple-100">
-            <Upload size={16} className="text-purple-500"/><span className="text-sm text-purple-600 font-semibold">Drop vendor PDF or PPT here</span>
-          </div>
-          {["Upload","Convert PPT→PDF","AI Extract","Preview","Review & Save"].map((s,i)=>(
-            <div key={s} className="flex items-center gap-1">
-              <div className={`px-3 py-1.5 rounded-lg text-xs font-bold ${i<2?"bg-green-100 text-green-700":"bg-gray-100 text-gray-500"}`}>{s}</div>
-              {i<4&&<ChevronRight size={12} className="text-gray-300"/>}
-            </div>
-          ))}
-        </div>
-      </Card>
-      <div className="flex gap-2">
-        {[{id:"media",l:"📡 Media Inventory"},{id:"physical",l:"📦 Physical & Fabrication"}].map(t=>(
-          <button key={t.id} onClick={()=>setTab(t.id)} className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${tab===t.id?"text-white":"bg-gray-100 text-gray-500"}`} style={tab===t.id?{background:T.purple}:{}}>{t.l}</button>
-        ))}
-        <div className="flex items-center gap-2 bg-gray-50 rounded-xl px-3 py-2 ml-auto"><Search size={13} className="text-gray-400"/><input className="bg-transparent text-sm outline-none" placeholder="Search inventory..."/></div>
-      </div>
-      {tab==="media"&&(
-        <Card>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead><tr className="border-b border-gray-100">{["ID","Vendor","Site Name","Category","Type","Location","Size","Reach","Rate Card","Status"].map(h=><th key={h} className="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase whitespace-nowrap">{h}</th>)}</tr></thead>
-              <tbody className="divide-y divide-gray-50">
-                {media.map((m,i)=>(
-                  <tr key={i} className="hover:bg-gray-50 cursor-pointer">
-                    <td className="px-4 py-3 text-xs font-mono text-gray-500 whitespace-nowrap">{m.id}</td>
-                    <td className="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">{m.vendor}</td>
-                    <td className="px-4 py-3 text-sm font-semibold text-gray-900 whitespace-nowrap">{m.name}</td>
-                    <td className="px-4 py-3"><Bdg t={m.cat} c="purple"/></td>
-                    <td className="px-4 py-3 text-sm text-gray-600 whitespace-nowrap">{m.type}</td>
-                    <td className="px-4 py-3 text-sm text-gray-600 whitespace-nowrap">{m.loc}</td>
-                    <td className="px-4 py-3 text-xs font-mono text-gray-600 whitespace-nowrap">{m.size}</td>
-                    <td className="px-4 py-3 text-sm text-gray-600 whitespace-nowrap">{m.reach}</td>
-                    <td className="px-4 py-3 text-sm font-black text-gray-900 whitespace-nowrap">{m.rate}</td>
-                    <td className="px-4 py-3"><Bdg t={m.status} c={m.status==="Available"?"green":"orange"}/></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </Card>
-      )}
-      {tab==="physical"&&(
-        <Card>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead><tr className="border-b border-gray-100">{["Vendor","Item","Category","Dimensions","Unit Cost","Min Order","Lead Time","Stock"].map(h=><th key={h} className="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase whitespace-nowrap">{h}</th>)}</tr></thead>
-              <tbody className="divide-y divide-gray-50">
-                {physical.map((p,i)=>(
-                  <tr key={i} className="hover:bg-gray-50 cursor-pointer">
-                    <td className="px-4 py-3 text-sm text-gray-700">{p.vendor}</td>
-                    <td className="px-4 py-3 text-sm font-semibold text-gray-900">{p.name}</td>
-                    <td className="px-4 py-3"><Bdg t={p.cat} c="teal"/></td>
-                    <td className="px-4 py-3 text-xs font-mono text-gray-600">{p.dims}</td>
-                    <td className="px-4 py-3 text-sm font-black text-gray-900">{p.cost}</td>
-                    <td className="px-4 py-3 text-sm text-gray-600">{p.moq}</td>
-                    <td className="px-4 py-3 text-sm text-gray-600">{p.lead}</td>
-                    <td className="px-4 py-3 text-sm font-semibold text-gray-800">{p.stock}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </Card>
-      )}
-    </div>
-  );
-}
-
-// ─── SCREEN: MEDIA ORDER & PO ─────────────────────────────────────
-function Orders({role="admin"}){
-  // Roles that can see vendor cost, PO, and AI pricing
-  const canSeeCost = ["admin","commercial","finance"].includes(role);
-  const canSeePO   = ["admin","commercial","finance"].includes(role);
-
-  const orders=[
-    {ref:"MO-2025-041",client:"AEON BIG",campaign:"Raya 2025 OOH",value:"RM 230,000",issued:"May 7",expires:"May 14",status:"Signed",c:0},
-    {ref:"MO-2025-040",client:"MYDIN",campaign:"Mid-Year Sale Digital",value:"RM 180,000",issued:"May 6",expires:"May 13",status:"Awaiting Signature",c:1},
-    {ref:"MO-2025-039",client:"KK Mart",campaign:"Store Launch Billboard",value:"RM 95,000",issued:"May 5",expires:"May 12",status:"Signed",c:2},
-  ];
-  const pos=[
-    {ref:"PO-2025-041",vendor:"Big Tree",mo:"MO-2025-041",items:"ELITE KM14 (1 month)",quoted:"RM 18,000",nego:"RM 14,500",saving:"19.4%",status:"Sent",c:0},
-    {ref:"PO-2025-040B",vendor:"Citylites",mo:"MO-2025-041",items:"Bangsar LED (1 month)",quoted:"RM 25,000",nego:"RM 19,800",saving:"20.8%",status:"Approved",c:1},
-    {ref:"PO-2025-039",vendor:"Big Tree",mo:"MO-2025-039",items:"Klang Unipole (2 months)",quoted:"RM 24,000",nego:"RM 18,500",saving:"22.9%",status:"Pending Approval",c:2},
-  ];
-  return(
-    <div className="flex flex-col gap-4">
-
-      {/* Sales-only notice */}
-      {!canSeeCost&&(
-        <div className="bg-blue-50 border border-blue-200 rounded-2xl p-4 flex items-center gap-3">
-          <span className="text-xl flex-shrink-0">ℹ️</span>
-          <div>
-            <div className="font-bold text-blue-900 text-sm">Sales View — Media Orders Only</div>
-            <div className="text-sm text-blue-700">You can create and manage Company Media Orders for client signature. Vendor costs and Purchase Orders are handled by the Commercial team.</div>
-          </div>
-        </div>
-      )}
-
-      {/* Rule Banner — shown to all */}
-      <div className="bg-red-50 border border-red-200 rounded-2xl p-4 flex items-center gap-3">
-        <span className="text-xl flex-shrink-0">🔒</span>
-        <div><div className="font-bold text-red-800 text-sm">System Rule — Enforced</div><div className="text-sm text-red-700">A Purchase Order to any media owner CANNOT be created until the Company Media Order has been signed by the client. This is not optional.</div></div>
-      </div>
-
-      <div className={`grid grid-cols-1 ${canSeePO?"md:grid-cols-2":""} gap-4`}>
-
-        {/* Media Orders — visible to all with access */}
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center justify-between">
-            <h3 className="font-black text-gray-900">📄 Company Media Orders</h3>
-            <button className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm text-white font-bold" style={{background:T.purple}}><Plus size={13}/>Generate</button>
-          </div>
-          <div className="text-xs text-gray-500 bg-blue-50 border border-blue-100 rounded-xl px-3 py-2">Created by <strong>Sales Team</strong> · Signed by <strong>Client</strong> · Sent via Outlook · AI detects signed copy in email</div>
-          {orders.map((o,i)=>(
-            <Card key={i} className="p-4">
-              <div className="flex items-start justify-between gap-2">
-                <div>
-                  <div className="flex items-center gap-2"><span className="text-xs font-mono text-gray-400">{o.ref}</span><Bdg t={o.status} c={o.status==="Signed"?"green":"amber"}/></div>
-                  <div className="text-sm font-bold text-gray-900 mt-1">{o.client} — {o.campaign}</div>
-                  <div className="text-xs text-gray-500 mt-0.5">Issued {o.issued} · Expires {o.expires}</div>
-                </div>
-                <div className="text-right flex-shrink-0">
-                  <div className="text-base font-black text-gray-900">{o.value}</div>
-                  <div className="text-xs text-gray-400">Client price</div>
-                </div>
-              </div>
-              {o.status==="Awaiting Signature"&&(
-                <div className="mt-3 bg-amber-50 border border-amber-200 rounded-xl p-2 flex items-center gap-2">
-                  <span className="text-sm">⏳</span>
-                  <span className="text-xs text-amber-700 font-semibold">Waiting for client signature. PO locked until signed.</span>
-                </div>
-              )}
-              {o.status==="Signed"&&canSeePO&&(
-                <div className="mt-3 bg-green-50 border border-green-200 rounded-xl p-2 flex items-center gap-2">
-                  <span className="text-sm">✅</span>
-                  <span className="text-xs text-green-700 font-semibold">Signed. Commercial team may now raise PO.</span>
-                </div>
-              )}
-              {o.status==="Signed"&&!canSeePO&&(
-                <div className="mt-3 bg-green-50 border border-green-200 rounded-xl p-2 flex items-center gap-2">
-                  <span className="text-sm">✅</span>
-                  <span className="text-xs text-green-700 font-semibold">Signed. Commercial team notified to proceed with booking.</span>
-                </div>
-              )}
-            </Card>
-          ))}
-        </div>
-
-        {/* Purchase Orders — HIDDEN from Sales */}
-        {canSeePO&&(
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center justify-between">
-              <h3 className="font-black text-gray-900">🛒 Purchase Orders <span className="text-xs font-normal text-gray-400 ml-1">(Commercial only)</span></h3>
-              <button className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm text-white font-bold" style={{background:T.teal}}><Plus size={13}/>Raise PO</button>
-            </div>
-            <div className="text-xs text-gray-500 bg-teal-50 border border-teal-100 rounded-xl px-3 py-2">Created by <strong>Commercial Team</strong> · Sent to <strong>Media Owner</strong> · Unlocked only after MO signed · AI Pricing shown</div>
-            {pos.map((p,i)=>(
-              <Card key={i} className="p-4">
-                <div className="flex items-start justify-between gap-2 mb-2">
-                  <div>
-                    <div className="flex items-center gap-2"><span className="text-xs font-mono text-gray-400">{p.ref}</span><Bdg t={p.status} c={p.status==="Sent"?"blue":p.status==="Approved"?"green":"amber"}/></div>
-                    <div className="text-sm font-bold text-gray-900 mt-1">{p.vendor} — {p.items}</div>
-                    <div className="text-xs text-gray-400 mt-0.5">Linked to {p.mo}</div>
-                  </div>
-                </div>
-                <div className="grid grid-cols-3 gap-2">
-                  <div className="bg-gray-50 rounded-lg p-2 text-center"><div className="text-xs text-gray-400">Vendor Quoted</div><div className="text-sm font-black text-gray-700">{p.quoted}</div></div>
-                  <div className="bg-green-50 rounded-lg p-2 text-center"><div className="text-xs text-gray-400">Negotiated</div><div className="text-sm font-black text-green-700">{p.nego}</div></div>
-                  <div className="bg-purple-50 rounded-lg p-2 text-center"><div className="text-xs text-gray-400">Saving</div><div className="text-sm font-black text-purple-700">{p.saving}</div></div>
-                </div>
-              </Card>
-            ))}
-
-            {/* AI Pricing — Commercial/Admin/Finance only */}
-            <Card className="p-4 border-2 border-purple-200 bg-purple-50">
-              <div className="flex items-center gap-2 mb-3"><span className="text-lg">🤖</span><span className="font-bold text-purple-900">AI Pricing Intelligence</span><Bdg t="Commercial only" c="purple"/></div>
-              <div className="grid grid-cols-2 gap-2 text-sm">
-                {[{l:"Vendor Quoted",v:"RM 18,000",c:"text-gray-700"},{l:"Your Historical Avg",v:"RM 14,200",c:"text-blue-700"},{l:"Best Price Achieved",v:"RM 11,500",c:"text-green-700"},{l:"Fair Market Range",v:"RM 13,500–15,000",c:"text-teal-700"},{l:"Suggested Opening",v:"RM 12,000",c:"text-purple-700 font-black"},{l:"Walk Away Above",v:"RM 16,500",c:"text-red-600"}].map(f=>(
-                  <div key={f.l} className="bg-white rounded-lg p-2"><div className="text-xs text-gray-400">{f.l}</div><div className={`font-bold ${f.c}`}>{f.v}</div></div>
-                ))}
-              </div>
-            </Card>
-
-            {/* Margin — Admin/Finance only */}
-            {["admin","finance"].includes(role)&&(
-              <Card className="p-4 border-2 border-amber-200 bg-amber-50">
-                <div className="flex items-center gap-2 mb-3"><span className="text-lg">💰</span><span className="font-bold text-amber-900">Agency Margin</span><Bdg t="Admin & Finance only" c="amber"/></div>
-                <div className="grid grid-cols-3 gap-3">
-                  <div className="bg-white rounded-xl p-3 text-center"><div className="text-xs text-gray-400">Client Billed (MO)</div><div className="text-base font-black text-gray-900">RM 230,000</div></div>
-                  <div className="bg-white rounded-xl p-3 text-center"><div className="text-xs text-gray-400">Vendor Cost (PO)</div><div className="text-base font-black text-gray-700">RM 180,000</div></div>
-                  <div className="bg-white rounded-xl p-3 text-center border-2 border-green-200"><div className="text-xs text-gray-400">Agency Margin</div><div className="text-base font-black text-green-700">RM 50,000</div><div className="text-xs text-green-600 font-bold">21.7%</div></div>
-                </div>
-              </Card>
-            )}
-          </div>
-        )}
-      </div>
     </div>
   );
 }
