@@ -21,16 +21,23 @@ const Step=({steps,current})=>(<div className="flex items-center gap-0">{steps.m
 const COLORS=["#6D28D9","#0D9488","#EA580C","#D97706","#DC2626","#2563EB","#16A34A","#7C3AED"];
 
 // ─── SCREEN: DASHBOARD ────────────────────────────────────────────
-function Dashboard({go}){
+function Dashboard({go,role="natasha",setModal:setModalProp}){
   const [done,setDone]=useState([false,false,false,false,false]);
   return(
     <div className="flex flex-col gap-4">
-      {/* Greeting */}
-      <div className="rounded-2xl p-5 flex items-center gap-4" style={{background:"linear-gradient(120deg,#EEF2FF,#F0FDF9)",border:"1px solid #E0E7FF"}}>
-        <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0" style={{background:"linear-gradient(135deg,#6D28D9,#0D9488)"}}>🌅</div>
-        <div className="flex-1"><div className="text-lg font-black text-gray-900">Good morning, Natasha.</div><div className="text-sm text-gray-500">Today: follow up 5 hot leads · send 2 proposals · close AEON BIG pitch by Friday</div></div>
-        <button className="px-4 py-2 rounded-xl text-sm font-bold text-white flex-shrink-0" style={{background:T.purple}}>🎯 View Target</button>
-      </div>
+      {/* Personalised Greeting */}
+      {(()=>{
+        const sp=typeof STAFF_PROFILES!=="undefined"&&STAFF_PROFILES[role]?STAFF_PROFILES[role]:null;
+        const greeting=sp?.greeting||"Good morning. Let's make today count.";
+        const color=sp?.color||"#6D28D9";
+        return(
+          <div className="rounded-2xl p-5 flex items-center gap-4 relative overflow-hidden" style={{background:`linear-gradient(135deg,${color}12,${color}06)`,border:`1px solid ${color}25`}}>
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-lg flex-shrink-0 font-black text-white" style={{background:`linear-gradient(135deg,${color},${color}AA)`}}>{sp?.avatar||"VR"}</div>
+            <div className="flex-1 min-w-0"><div className="text-base font-black text-gray-900 leading-snug">{greeting}</div><div className="text-xs text-gray-400 mt-1 italic truncate">"{sp?.quote||"Let's go."}"</div></div>
+            <button onClick={()=>setModalProp&&setModalProp("target")} className="px-4 py-2 rounded-xl text-sm font-bold text-white flex-shrink-0" style={{background:color}}>🎯</button>
+          </div>
+        );
+      })()}
       {/* KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <Kpi icon={<Users size={18}/>} label="New Leads" value="28" delta="↑18%" up color={T.purple} sub="vs last 7 days"/>
@@ -221,9 +228,325 @@ function Brief(){
 }
 
 
+
+// ─── DOCUMENT TEMPLATE PREVIEWS ──────────────────────────────────
+function ProposalPreview({onClose, client="AEON BIG", campaign="Raya 2026 OOH Campaign", preparedBy="Natasha Tan"}){
+  const sites=[
+    {id:"VR0315",loc:"Jalan Bukit Bintang, near Pavilion KL",size:"18×12ft",px:"768×384px",eyeballs:"12.6M/mo",traffic:"10.5M/mo",hours:"6am–12am",dur6:"",dur12:"",pubRate:"",bestRate:"",sst:"",total:""},
+    {id:"VR0707",loc:"Sprint Highway, near Damansara Intan",size:"32×21.5ft",px:"960×672px",eyeballs:"8.64M/mo",traffic:"7.2M/mo",hours:"6.30am–12.30am",dur6:"",dur12:"",pubRate:"",bestRate:"",sst:"",total:""},
+    {id:"VR4401",loc:"Jalan Tun Razak/Jalan Ampang towards KLCC/TRX",size:"60×40ft",px:"TBA",eyeballs:"7.6M/mo",traffic:"6.33M/mo",hours:"6.30am–12.30am",dur6:"",dur12:"",pubRate:"",bestRate:"",sst:"",total:""},
+  ];
+  return(
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-2 md:p-6" onClick={e=>e.target===e.currentTarget&&onClose()}>
+      <div className="w-full max-w-3xl max-h-[92vh] rounded-2xl overflow-hidden flex flex-col shadow-2xl">
+        {/* Dark cover */}
+        <div className="flex-shrink-0 p-6 relative" style={{background:"linear-gradient(145deg,#0a0f1e 0%,#0C1F3F 50%,#0d2a1a 100%)"}}>
+          <button onClick={onClose} className="absolute top-4 right-4 w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center text-white hover:bg-white/20"><X size={14}/></button>
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center font-black text-white text-sm" style={{background:"linear-gradient(135deg,#00D4AA,#0089CC)"}}>VR</div>
+            <div className="text-white/40 text-xs tracking-widest uppercase">Visual EFX Sdn Bhd</div>
+          </div>
+          <div className="text-white/60 text-xs tracking-widest uppercase mb-1">Proposal</div>
+          <div className="text-white text-lg font-black leading-tight mb-1">Digital Out-of-Home Advertising</div>
+          <div className="text-teal-300 text-xl font-black">{campaign}</div>
+          <div className="text-white/50 text-xs mt-2">Prepared for: {client} · Prepared by: {preparedBy} · {new Date().toLocaleDateString('en-MY',{day:'numeric',month:'long',year:'numeric'})}</div>
+        </div>
+
+        <div className="flex-1 overflow-y-auto bg-white">
+          {/* Proposal Summary */}
+          <div className="p-5 border-b border-gray-100">
+            <div className="font-black text-gray-900 text-base mb-3">Proposal Summary</div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="rounded-xl p-4" style={{background:"#0C1F3F"}}>
+                <div className="text-teal-400 text-xs font-bold uppercase tracking-wide mb-2">Objective</div>
+                <div className="text-white text-sm leading-relaxed">To build strong brand awareness for {client} during the {campaign.replace('OOH Campaign','').replace('Campaign','').trim()} season. To strategically position the brand across high-traffic areas in Kuala Lumpur and Selangor.</div>
+              </div>
+              <div className="rounded-xl p-4" style={{background:"#1a3060"}}>
+                <div className="text-teal-400 text-xs font-bold uppercase tracking-wide mb-2">Strategy</div>
+                <div className="text-white text-sm leading-relaxed">Execute a DOOH campaign targeting high-traffic areas. Deploy digital screens mapped for optimal visibility. Leverage digital formats for dynamic messaging and real-time engagement.</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Campaign Strategy */}
+          <div className="p-5 border-b border-gray-100 bg-gray-50">
+            <div className="font-black text-gray-900 mb-2">Campaign Strategy — 1 Month (2+2 Week Approach)</div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {[{phase:"Before Opening (2 Weeks)",label:"Teaser & Awareness",color:"#EA580C",points:["Build brand presence before campaign launches","Create curiosity and excitement","Drive early social media engagement","Influence decision-makers early"]},{phase:"After Opening (2 Weeks)",label:"Momentum & Conversion",color:"#0D9488",points:["Sustain momentum with real campaign visuals","Establish credibility through 'Now Live' messaging","Encourage immediate response and engagement","Leverage post-launch visuals for undecided prospects"]}].map((p,i)=>(
+                <div key={i} className="rounded-xl p-4 border-l-4" style={{borderColor:p.color,background:p.color+"08"}}>
+                  <div className="text-xs font-bold uppercase tracking-wide mb-0.5" style={{color:p.color}}>{p.phase}</div>
+                  <div className="font-bold text-gray-800 text-sm mb-2">{p.label}</div>
+                  {p.points.map((pt,j)=><div key={j} className="flex items-start gap-1.5 text-xs text-gray-600 mb-1"><span style={{color:p.color}}>✓</span>{pt}</div>)}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Site Details */}
+          <div className="p-5">
+            <div className="font-black text-gray-900 mb-3">Proposed Media Locations</div>
+            {sites.map((s,i)=>(
+              <div key={i} className="mb-5 rounded-xl overflow-hidden border border-gray-200">
+                <div className="px-4 py-2 font-bold text-sm" style={{background:"#0C1F3F",color:"#00D4AA"}}>{s.id} — {s.loc}</div>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-0">
+                  {[{l:"Media Format",v:"DOOH"},{l:"Screen Size",v:s.size},{l:"Pixel Specs",v:s.px},{l:"Operating Hours",v:s.hours},{l:"Est. Eyeballs/mo",v:s.eyeballs},{l:"Est. Traffic/mo",v:s.traffic}].map(f=>(
+                    <div key={f.l} className="p-2.5 border-b border-r border-gray-100">
+                      <div className="text-xs text-gray-400">{f.l}</div>
+                      <div className="text-xs font-bold text-gray-800">{f.v}</div>
+                    </div>
+                  ))}
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-xs">
+                    <thead><tr style={{background:"#0C1F3F"}}>{["Location","Size (H'×W')","Material Spec","Duration","Published Rate (RM)","Best Rate (RM)","6% SST (RM)","Total (RM)"].map(h=><th key={h} className="px-3 py-2 text-left font-semibold whitespace-nowrap" style={{color:"rgba(255,255,255,0.7)"}}>{h}</th>)}</tr></thead>
+                    <tbody>
+                      {["6 months","12 months"].map((dur,j)=>(
+                        <tr key={j} className="border-b border-gray-100">
+                          {j===0&&<td className="px-3 py-2 text-gray-600" rowSpan={2}>{s.loc}</td>}
+                          {j===0&&<td className="px-3 py-2 text-gray-600 whitespace-nowrap" rowSpan={2}>{s.size}</td>}
+                          {j===0&&<td className="px-3 py-2 font-mono text-gray-500 whitespace-nowrap" rowSpan={2}>{s.px}</td>}
+                          <td className="px-3 py-2 text-gray-600 whitespace-nowrap">{dur}</td>
+                          <td className="px-3 py-2 text-gray-400 italic">To be quoted</td>
+                          <td className="px-3 py-2 text-gray-400 italic">Negotiated</td>
+                          <td className="px-3 py-2 text-gray-400 italic">6% SST</td>
+                          <td className="px-3 py-2 text-gray-400 italic">—</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="px-5 pb-5 text-xs text-gray-400 italic border-t border-gray-100 pt-3">Private & Confidential · Copyright © 2026 · Properties of Visual EFX Sdn Bhd (1104483-H)</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MediaOrderPreview({onClose, client="AEON BIG", contact="Andrew Lim", phone="012-3456789", email="andrew@aeonbig.com", campaign="Raya 2026 OOH", preparedBy="Shazia Ali"}){
+  const today=new Date().toLocaleDateString('en-MY',{day:'2-digit',month:'2-digit',year:'numeric'});
+  const quotNo=`SA/${client.replace(/\s/g,'').toUpperCase().slice(0,4)}/${new Date().getDate()}${String(new Date().getMonth()+1).padStart(2,'0')}${String(new Date().getFullYear()).slice(2)}`;
+  const sites=[
+    {item:1,code:"VR0315",loc:"Jalan Bukit Bintang, near Pavilion KL",size:"768×384px",rate:22000},
+    {item:2,code:"VR0707",loc:"Sprint Highway, near Damansara Intan",size:"960×672px",rate:18000},
+    {item:3,code:"VR4401",loc:"Jalan Tun Razak/Jalan Ampang, towards KLCC/TRX",size:"TBA",rate:32000},
+  ];
+  const total=sites.reduce((a,s)=>a+s.rate,0);
+  const comm=total*0.1;
+  const net=total-comm;
+  return(
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-2 md:p-6" onClick={e=>e.target===e.currentTarget&&onClose()}>
+      <div className="w-full max-w-3xl max-h-[92vh] rounded-2xl overflow-hidden flex flex-col shadow-2xl bg-white">
+        <div className="flex items-center justify-between px-5 py-3 border-b border-gray-100 flex-shrink-0">
+          <span className="font-black text-gray-900">Media Order Preview</span>
+          <button onClick={onClose} className="w-8 h-8 rounded-xl bg-gray-100 flex items-center justify-center hover:bg-gray-200"><X size={14}/></button>
+        </div>
+        <div className="flex-1 overflow-y-auto p-5">
+          {/* Header */}
+          <div className="flex items-start justify-between mb-4 pb-4 border-b border-gray-200">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center font-black text-white text-xs" style={{background:"linear-gradient(135deg,#00D4AA,#0089CC)"}}>VR</div>
+                <div className="font-black text-gray-900 text-base">VISUAL EFX SDN BHD</div>
+              </div>
+              <div className="text-xs text-gray-400">Company No: 1104483-H</div>
+            </div>
+            <div className="text-right">
+              <div className="text-xs text-gray-500">Date: {today}</div>
+              <div className="text-xs text-gray-500 mt-0.5">Quot No: {quotNo}</div>
+            </div>
+          </div>
+          {/* Client Info */}
+          <div className="grid grid-cols-2 gap-3 mb-4 bg-gray-50 rounded-xl p-4">
+            {[{l:"Company",v:client},{l:"Attn",v:contact},{l:"Contact",v:phone},{l:"Email",v:email},{l:"Ref",v:`VR/${client.replace(/\s/g,'').toUpperCase().slice(0,4)} (${campaign})`}].map(f=>(
+              <div key={f.l} className="flex gap-2">
+                <span className="text-xs font-bold text-gray-500 w-16 flex-shrink-0">{f.l}</span>
+                <span className="text-xs text-gray-800">: {f.v}</span>
+              </div>
+            ))}
+          </div>
+          {/* Items Table */}
+          <div className="overflow-x-auto mb-3">
+            <table className="w-full text-xs border border-gray-200 rounded-xl overflow-hidden">
+              <thead><tr className="text-white" style={{background:"#0C1F3F"}}>{["Item","Site Code","Location Details","Material Size","Duration","Best Rate","TOTAL"].map(h=><th key={h} className="px-3 py-2.5 text-left font-semibold whitespace-nowrap">{h}</th>)}</tr></thead>
+              <tbody>
+                {sites.map((s,i)=>(
+                  <tr key={i} className={i%2===0?"bg-white":"bg-gray-50"}>
+                    <td className="px-3 py-2.5 text-center font-bold text-gray-600">{s.item}</td>
+                    <td className="px-3 py-2.5 font-bold text-teal-700 whitespace-nowrap">{s.code}</td>
+                    <td className="px-3 py-2.5 text-gray-700">{s.loc}</td>
+                    <td className="px-3 py-2.5 font-mono text-gray-500 whitespace-nowrap">{s.size}</td>
+                    <td className="px-3 py-2.5 text-gray-600 whitespace-nowrap">2 Weeks</td>
+                    <td className="px-3 py-2.5 font-bold text-gray-800 whitespace-nowrap">RM {s.rate.toLocaleString()}.00</td>
+                    <td className="px-3 py-2.5 font-bold text-gray-800 whitespace-nowrap">RM {s.rate.toLocaleString()}.00</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {/* In-charge date */}
+          <div className="bg-teal-50 border border-teal-200 rounded-xl px-4 py-2 text-xs font-bold text-teal-800 mb-4">
+            IN-CHARGE DATE: {new Date(Date.now()+14*24*60*60*1000).toLocaleDateString('en-MY',{day:'2-digit',month:'2-digit',year:'numeric'})} – {new Date(Date.now()+28*24*60*60*1000).toLocaleDateString('en-MY',{day:'2-digit',month:'2-digit',year:'numeric'})}
+          </div>
+          {/* Totals */}
+          <div className="flex justify-end mb-4">
+            <div className="w-64">
+              {[{l:"Total:",v:`RM ${total.toLocaleString()}.00`,bold:false},{l:"10% Commission",v:`RM ${comm.toLocaleString()}.00`,bold:false},{l:"Net Media Cost",v:`RM ${net.toLocaleString()}.00`,bold:true}].map((r,i)=>(
+                <div key={i} className={`flex justify-between py-1 ${i===2?"border-t-2 border-gray-900 font-black":"border-t border-gray-200"}`}>
+                  <span className="text-xs text-gray-600">{r.l}</span>
+                  <span className={`text-xs ${r.bold?"font-black text-gray-900":"font-semibold text-gray-700"}`}>{r.v}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          {/* T&Cs abbreviated */}
+          <div className="bg-gray-50 rounded-xl p-4 mb-4">
+            <div className="text-xs font-black text-gray-700 mb-2">TERMS & CONDITIONS</div>
+            {["1. Order Confirmation — All media bookings are subject to written confirmation by Visual EFX Sdn Bhd. This signed & stamped media order constitutes confirmation of booking.",
+              "2. Payment Terms — All invoices payable within ninety (90) days from invoice date. Late payment charge of 1.5% per month applies on overdue amounts.",
+              "3. Cancellation — All cancellations must be submitted in writing at least four (4) weeks prior to campaign commencement. 10% cancellation fee applies upon confirmation.",
+              "7. Reporting & Performance — This campaign is eligible for an Exposure Report & Proof of Play only."].map((t,i)=>(
+              <div key={i} className="text-xs text-gray-500 mb-1.5 leading-relaxed">{t}</div>
+            ))}
+          </div>
+          {/* Signatures */}
+          <div className="grid grid-cols-2 gap-6">
+            {[{label:"Prepared by",name:preparedBy,desig:"Campaign Specialist",date:`${new Date().getDate()}th ${new Date().toLocaleDateString('en-MY',{month:'long'})} ${new Date().getFullYear()}`},{label:"Accepted by",name:"",desig:"",date:""}].map((sig,i)=>(
+              <div key={i} className="border-t-2 border-gray-300 pt-3">
+                <div className="text-xs font-bold text-gray-500 mb-2">{sig.label}:</div>
+                {sig.name&&<div className="font-black text-gray-800 italic text-base mb-1" style={{fontFamily:"cursive"}}>{sig.name}</div>}
+                <div className="text-xs text-gray-600">Name: {sig.name||"_________________"}</div>
+                <div className="text-xs text-gray-600 mt-0.5">Designation: {sig.desig||"_________________"}</div>
+                <div className="text-xs text-gray-600 mt-0.5">Date: {sig.date||"_________________"}</div>
+                {i===1&&<div className="text-xs text-gray-600 mt-0.5">Company Stamp:</div>}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BriefFormPreview({onClose}){
+  const [form,setForm]=useState({dateSubmit:"",salesPerson:"",client:"",brand:"",poc:"",deadline:"",campaign:"",objective:"",duration:"",budget:"",sites:"",audience:[],mediaType:[],format:"",proposalType:"",strategy:[]});
+  const upd=(k,v)=>setForm(f=>({...f,[k]:v}));
+  const toggleArr=(k,v)=>setForm(f=>({...f,[k]:f[k].includes(v)?f[k].filter(x=>x!==v):[...f[k],v]}));
+  const labelStyle="text-xs font-bold text-gray-600 uppercase tracking-wide block mb-1";
+  const inputStyle="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-purple-400 transition-colors bg-white";
+  return(
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-2 md:p-6" onClick={e=>e.target===e.currentTarget&&onClose()}>
+      <div className="w-full max-w-3xl max-h-[92vh] rounded-2xl overflow-hidden flex flex-col shadow-2xl bg-white">
+        <div className="flex items-center justify-between px-5 py-3 border-b border-gray-100 flex-shrink-0" style={{background:"#0C1F3F"}}>
+          <div>
+            <div className="text-white font-black text-base">Channel Team — Sales Brief Request Form</div>
+            <div className="text-white/50 text-xs">Please complete all fields before submitting. Incomplete briefs will not be processed.</div>
+          </div>
+          <button onClick={onClose} className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center text-white hover:bg-white/20"><X size={14}/></button>
+        </div>
+        <div className="flex-1 overflow-y-auto p-5 flex flex-col gap-5">
+          {/* Section A */}
+          <div><div className="flex items-center gap-2 mb-3"><div className="w-6 h-6 rounded-lg flex items-center justify-center text-white text-xs font-black flex-shrink-0" style={{background:"#0C1F3F"}}>A</div><div className="font-black text-gray-900 text-sm">Client & Submission Details</div></div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {[{l:"Date of Submission",k:"dateSubmit",type:"date"},{l:"Sales Person Name & Team",k:"salesPerson"},{l:"Client / Company Name",k:"client"},{l:"Brand Name",k:"brand"},{l:"Agency (if applicable)",k:"agency"},{l:"Point of Contact (Name & Email)",k:"poc"},{l:"Proposal Deadline / Pitch Date",k:"deadline",type:"date"}].map(f=>(
+                <div key={f.k}><label className={labelStyle}>{f.l}</label><input type={f.type||"text"} className={inputStyle} onChange={e=>upd(f.k,e.target.value)} placeholder={f.l}/></div>
+              ))}
+            </div>
+          </div>
+          {/* Section B */}
+          <div><div className="flex items-center gap-2 mb-3"><div className="w-6 h-6 rounded-lg flex items-center justify-center text-white text-xs font-black flex-shrink-0" style={{background:"#0C1F3F"}}>B</div><div className="font-black text-gray-900 text-sm">Campaign Details</div></div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {[{l:"Campaign Name",k:"campaign"},{l:"Campaign Objective",k:"objective"},{l:"Campaign Duration",k:"duration"},{l:"Budget Indication (min. RM100K)",k:"budget"},{l:"No. of Sites / Screens (approx.)",k:"sites"}].map(f=>(
+                <div key={f.k}><label className={labelStyle}>{f.l}</label><input type="text" className={inputStyle} onChange={e=>upd(f.k,e.target.value)} placeholder={f.l}/></div>
+              ))}
+            </div>
+          </div>
+          {/* Section C */}
+          <div><div className="flex items-center gap-2 mb-3"><div className="w-6 h-6 rounded-lg flex items-center justify-center text-white text-xs font-black flex-shrink-0" style={{background:"#0C1F3F"}}>C</div><div className="font-black text-gray-900 text-sm">Target Audience (Select up to 3)</div></div>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+              {["Young Adults (18–25)","Working Professionals (26–40)","Mature Adults (41–55)","Seniors (55+)","Parents / Families","Students / Campus Crowd","High-Income Individuals","Tourists & Travellers","Business Decision Makers","Health & Wellness Enthusiasts","Tech-Savvy Consumers","Upscale Shoppers"].map(a=>(
+                <label key={a} className={`flex items-center gap-2 p-2 rounded-xl border cursor-pointer text-xs transition-all ${form.audience.includes(a)?"border-purple-400 bg-purple-50":"border-gray-200 bg-white hover:bg-gray-50"}`}>
+                  <input type="checkbox" checked={form.audience.includes(a)} onChange={()=>toggleArr("audience",a)} className="accent-purple-600"/>
+                  <span className="font-medium text-gray-700">{a}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+          {/* Section D */}
+          <div><div className="flex items-center gap-2 mb-3"><div className="w-6 h-6 rounded-lg flex items-center justify-center text-white text-xs font-black flex-shrink-0" style={{background:"#0C1F3F"}}>D</div><div className="font-black text-gray-900 text-sm">Preferred Locations / Geography</div></div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {[{l:"Preferred States / Cities",k:"prefStates"},{l:"Specific Areas / Landmarks",k:"landmarks"},{l:"Locations to EXCLUDE",k:"exclude"}].map(f=>(
+                <div key={f.k}><label className={labelStyle}>{f.l}</label><textarea className={inputStyle+" resize-none"} rows={2} onChange={e=>upd(f.k,e.target.value)} placeholder={f.l}/></div>
+              ))}
+            </div>
+          </div>
+          {/* Section E */}
+          <div><div className="flex items-center gap-2 mb-3"><div className="w-6 h-6 rounded-lg flex items-center justify-center text-white text-xs font-black flex-shrink-0" style={{background:"#0C1F3F"}}>E</div><div className="font-black text-gray-900 text-sm">Media Type & Medium (Select up to 3)</div></div>
+            <div className="flex gap-3 mb-3 flex-wrap">
+              {["Static (Traditional Billboard)","DOOH (Digital Out-of-Home)","Both Static & DOOH"].map(t=>(
+                <label key={t} className={`flex items-center gap-2 px-3 py-2 rounded-xl border cursor-pointer text-xs transition-all ${form.mediaType.includes(t)?"border-teal-400 bg-teal-50":"border-gray-200"}`}>
+                  <input type="checkbox" checked={form.mediaType.includes(t)} onChange={()=>toggleArr("mediaType",t)} className="accent-teal-600"/>
+                  <span className="font-medium text-gray-700">{t}</span>
+                </label>
+              ))}
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              {["Large Format","Spectacular Format","Shopping Malls","Transits","Office","Residential","Cinemas","Campus","Government Screens","Retail Screens"].map(f=>(
+                <label key={f} className={`flex items-center gap-2 p-2 rounded-xl border cursor-pointer text-xs transition-all ${form.format===f?"border-orange-400 bg-orange-50":"border-gray-200"}`}>
+                  <input type="radio" name="format" checked={form.format===f} onChange={()=>upd("format",f)} className="accent-orange-500"/>
+                  <span className="font-medium text-gray-700">{f}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+          {/* Section F */}
+          <div><div className="flex items-center gap-2 mb-3"><div className="w-6 h-6 rounded-lg flex items-center justify-center text-white text-xs font-black flex-shrink-0" style={{background:"#0C1F3F"}}>F</div><div className="font-black text-gray-900 text-sm">Proposal Requirements</div></div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div><label className={labelStyle}>Type of Proposal Needed</label>
+                {["Mapping + Site Reference Only","Full Strategy + Mapping + Site Reference","Re-negotiation of Pricing (DOOH)"].map(t=>(
+                  <label key={t} className="flex items-center gap-2 mb-2 cursor-pointer"><input type="radio" name="propType" className="accent-purple-600"/><span className="text-xs text-gray-700">{t}</span></label>
+                ))}
+              </div>
+              <div><label className={labelStyle}>Proposal Format</label>
+                {["Menu-Card Style (Up to 3 options)","Custom Package (1 tailored option)"].map(t=>(
+                  <label key={t} className="flex items-center gap-2 mb-2 cursor-pointer"><input type="radio" name="propFmt" className="accent-purple-600"/><span className="text-xs text-gray-700">{t}</span></label>
+                ))}
+              </div>
+            </div>
+            <div className="mt-3"><label className={labelStyle}>Specific Must-Haves / Additional Context</label><textarea className={inputStyle+" resize-none"} rows={3} placeholder="Mandatory sites, previous campaigns, creative concept ideas..."/></div>
+          </div>
+          {/* Section H — SLA */}
+          <div className="bg-gray-50 rounded-xl p-4">
+            <div className="flex items-center gap-2 mb-3"><div className="w-6 h-6 rounded-lg flex items-center justify-center text-white text-xs font-black flex-shrink-0" style={{background:"#0C1F3F"}}>H</div><div className="font-black text-gray-900 text-sm">SLA — Turnaround Times</div></div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs">
+                <thead><tr className="bg-gray-200">{["Type","Commercial","Channel","Total"].map(h=><th key={h} className="px-3 py-2 text-left font-bold text-gray-600">{h}</th>)}</tr></thead>
+                <tbody>
+                  {[["Mapping + Site Reference Only","0 days","1–2 days","1–2 days"],["Full Strategy + Mapping","0 days","3–5 days","3–5 days"],["Re-negotiation of Pricing","1–2 days","2–3 days","2–3 days"],["Retail/Event Activation","1 day","5–7 days","5–7 days"]].map((r,i)=>(
+                    <tr key={i} className={i%2===0?"bg-white":"bg-gray-50"}>
+                      {r.map((c,j)=><td key={j} className={`px-3 py-2 ${j===0?"font-semibold text-gray-700":"text-gray-600"}`}>{c}</td>)}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="text-xs text-gray-400 mt-2">* All timelines in working days. Cut-off time is 12:00PM. Urgent requests require mutual agreement between Commercial and Channel.</div>
+          </div>
+          <button className="w-full py-3 rounded-xl text-white font-bold text-sm" style={{background:"#0C1F3F"}}>Submit Brief to Channel Team →</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
 // ─── SCREEN: PROPOSAL BUILDER (WITH DEMO FLOW) ───────────────────
 function Proposals(){
   const [demoOpen,setDemoOpen]=useState(false);
+  const [docModal,setDocModal]=useState(null);
   const [demoStage,setDemoStage]=useState(0);
   const rows=[
     {title:"AEON BIG – Raya 2026 Campaign",client:"AEON BIG",value:"RM 350K",owner:"Natasha Tan",sent:"May 7",viewed:"Viewed May 8, 9:21AM",stage:"Awaiting Approval",sc:"amber",ver:"v2",c:0},
@@ -255,6 +578,33 @@ function Proposals(){
         <Kpi icon={<Eye size={18}/>} label="Awaiting Approval" value="6" color={T.orange} sub="↑2 vs 7d"/>
         <Kpi icon={<Award size={18}/>} label="Won from Proposal" value="RM 1.21M" delta="↑18%" up color={T.green}/>
       </div>
+
+      {/* Document Templates */}
+      <Card className="p-4">
+        <div className="flex items-center gap-2 mb-3">
+          <span className="text-lg">📄</span>
+          <div>
+            <div className="font-black text-gray-900 text-sm">Document Templates</div>
+            <div className="text-xs text-gray-500">Preview VR's standard document formats — click to open</div>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {[
+            {icon:"📊",label:"Proposal Template",desc:"DOOH proposal — dark theme, site pages, pricing table",color:"#0C1F3F",action:()=>setDocModal("proposal")},
+            {icon:"📋",label:"Media Order Template",desc:"Client-facing MO — based on actual KULT/Wipro-Unza format",color:"#0D9488",action:()=>setDocModal("mediaorder")},
+            {icon:"📝",label:"Brief Form Template",desc:"Channel Team brief form — Sections A–H with SLA",color:"#6D28D9",action:()=>setDocModal("brief")},
+          ].map(t=>(
+            <button key={t.label} onClick={t.action} className="flex items-start gap-3 p-4 rounded-xl border-2 border-gray-100 hover:border-purple-300 text-left transition-all">
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center text-xl flex-shrink-0" style={{background:t.color+"15"}}>{t.icon}</div>
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-bold text-gray-900">{t.label}</div>
+                <div className="text-xs text-gray-400 mt-0.5 leading-snug">{t.desc}</div>
+              </div>
+              <Eye size={13} className="text-gray-400 mt-1 flex-shrink-0"/>
+            </button>
+          ))}
+        </div>
+      </Card>
 
       {/* Demo Proposal Banner */}
       <div className="rounded-2xl p-4 flex items-center gap-4" style={{background:"linear-gradient(135deg,#0C1F3F,#1a3060)",border:"1px solid rgba(109,40,217,0.3)"}}>
@@ -308,6 +658,11 @@ function Proposals(){
           ))}
         </div>
       </Card>
+
+      {/* Document Template Modals */}
+      {docModal==="proposal"&&<ProposalPreview onClose={()=>setDocModal(null)}/>}
+      {docModal==="mediaorder"&&<MediaOrderPreview onClose={()=>setDocModal(null)}/>}
+      {docModal==="brief"&&<BriefFormPreview onClose={()=>setDocModal(null)}/>}
 
       {/* Demo Modal */}
       {demoOpen&&(
@@ -372,6 +727,83 @@ function Proposals(){
 
 // ─── 100 INVENTORY ITEMS ─────────────────────────────────────────
 const ALL_INVENTORY = [
+  // ─── NEW VR SITES (from Gegak Gempita + Grab NakNak campaigns) ──
+  {id:"VR0403",vendor:"Ledtronics",name:"Institut Jantung Negara, KL",cat:"DOOH",type:"LED Screen",loc:"Jalan Pahang, KL",state:"KL",size:"38×25ft",pixels:"720×480px",ops:"6.30am–12.30am (18H)",minExp:250,slotDur:"15 Secs",trafficDaily:200000,trafficMo:6000000,eyeballsDaily:240000,eyeballsMo:7200000,pubRate1M:13000,pubRate2W:6500,bestRate2W:3000,payoutMO:2000,netVR:1000,netPct:0.333,reach:"200K/day",rate:3000,status:"Available"},
+  {id:"VR0501",vendor:"Imec Plus",name:"Lebuhraya Sultan Iskandar, KL",cat:"DOOH",type:"LED Screen",loc:"Kerinchi, KL",state:"KL",size:"30×20ft",pixels:"1080×720px",ops:"6.30am–12.30am (18H)",minExp:200,slotDur:"15 Secs",trafficDaily:320000,trafficMo:9600000,eyeballsDaily:384000,eyeballsMo:11520000,pubRate1M:12500,pubRate2W:6250,bestRate2W:3800,payoutMO:2500,netVR:1300,netPct:0.342,reach:"320K/day",rate:3800,status:"Available"},
+  {id:"VR0502",vendor:"Imec Plus",name:"Jalan Kuching, near Batu Caves junction",cat:"DOOH",type:"LED Screen",loc:"Jalan Kuching, KL",state:"KL",size:"30×20ft",pixels:"1080×720px",ops:"6.30am–12.30am (18H)",minExp:200,slotDur:"15 Secs",trafficDaily:300000,trafficMo:9000000,eyeballsDaily:360000,eyeballsMo:10800000,pubRate1M:12500,pubRate2W:6250,bestRate2W:3800,payoutMO:2500,netVR:1300,netPct:0.342,reach:"300K/day",rate:3800,status:"Available"},
+  {id:"VR1201",vendor:"Warisan Ads",name:"Jalan Pinang, near KLCC Convention Centre",cat:"DOOH",type:"LED Screen",loc:"KLCC, KL",state:"KL",size:"9×8ft",pixels:"900×1080px",ops:"7.00am–1.00am (18H)",minExp:270,slotDur:"15 Secs",trafficDaily:110000,trafficMo:3300000,eyeballsDaily:132000,eyeballsMo:3960000,pubRate1M:4000,pubRate2W:2000,bestRate2W:15200,payoutMO:10000,netVR:5200,netPct:0.342,reach:"110K/day",rate:15200,status:"Available"},
+  {id:"VR1202",vendor:"Warisan Ads",name:"Jalan Raja Chulan heading towards Bukit Bintang",cat:"DOOH",type:"LED Screen",loc:"Raja Chulan, KL",state:"KL",size:"9×8ft",pixels:"900×1080px",ops:"7.00am–1.00am (18H)",minExp:270,slotDur:"15 Secs",trafficDaily:100000,trafficMo:3000000,eyeballsDaily:120000,eyeballsMo:3600000,pubRate1M:4000,pubRate2W:2000,bestRate2W:0,payoutMO:0,netVR:0,netPct:0,reach:"100K/day",rate:4000,status:"Available"},
+  {id:"VR1203",vendor:"Warisan Ads",name:"Jalan Bukit Bintang, near Lot 10",cat:"DOOH",type:"LED Screen",loc:"Bukit Bintang, KL",state:"KL",size:"9×8ft",pixels:"900×1080px",ops:"7.00am–1.00am (18H)",minExp:270,slotDur:"15 Secs",trafficDaily:150000,trafficMo:4500000,eyeballsDaily:180000,eyeballsMo:5400000,pubRate1M:4000,pubRate2W:2000,bestRate2W:0,payoutMO:0,netVR:0,netPct:0,reach:"150K/day",rate:4000,status:"Available"},
+  {id:"VR1204",vendor:"Warisan Ads",name:"Jalan Ampang, infront of Great Eastern Mall",cat:"DOOH",type:"LED Screen",loc:"Jalan Ampang, KL",state:"KL",size:"30×20ft",pixels:"900×1080px",ops:"7.00am–1.00am (18H)",minExp:270,slotDur:"15 Secs",trafficDaily:130000,trafficMo:3900000,eyeballsDaily:156000,eyeballsMo:4680000,pubRate1M:18000,pubRate2W:9000,bestRate2W:0,payoutMO:0,netVR:0,netPct:0,reach:"130K/day",rate:9000,status:"Available"},
+  {id:"VR1205",vendor:"Warisan Ads",name:"Jalan Raja Chulan to Jalan Ampang junction",cat:"DOOH",type:"LED Screen",loc:"Raja Chulan, KL",state:"KL",size:"9×8ft",pixels:"900×1080px",ops:"7.00am–1.00am (18H)",minExp:270,slotDur:"15 Secs",trafficDaily:150000,trafficMo:4500000,eyeballsDaily:180000,eyeballsMo:5400000,pubRate1M:4000,pubRate2W:2000,bestRate2W:0,payoutMO:0,netVR:0,netPct:0,reach:"150K/day",rate:4000,status:"Available"},
+  {id:"VR1206",vendor:"Warisan Ads",name:"Jalan Raja Chulan facing Menara Citibank",cat:"DOOH",type:"LED Screen",loc:"Raja Chulan, KL",state:"KL",size:"10×20ft",pixels:"1080×558px",ops:"7.00am–1.00am (18H)",minExp:285,slotDur:"15 Secs",trafficDaily:300000,trafficMo:9000000,eyeballsDaily:360000,eyeballsMo:10800000,pubRate1M:10200,pubRate2W:5100,bestRate2W:0,payoutMO:0,netVR:0,netPct:0,reach:"300K/day",rate:5100,status:"Available"},
+  {id:"VR1403A",vendor:"Setia Media",name:"Federal Highway Opposite Subang Parade (A)",cat:"DOOH",type:"LED Screen",loc:"Federal Highway, Selangor",state:"Selangor",size:"30×20ft",pixels:"864×576px",ops:"6.30am–12.30am (18H)",minExp:270,slotDur:"15 Secs",trafficDaily:1200000,trafficMo:36000000,eyeballsDaily:1440000,eyeballsMo:43200000,pubRate1M:13800,pubRate2W:6900,bestRate2W:3400,payoutMO:2231.25,netVR:1168.75,netPct:0.344,reach:"1.2M/day",rate:3400,status:"Available"},
+  {id:"VR1403B",vendor:"Setia Media",name:"Federal Highway Opposite Subang Parade (B)",cat:"DOOH",type:"LED Screen",loc:"Federal Highway, Selangor",state:"Selangor",size:"30×20ft",pixels:"864×576px",ops:"6.30am–12.30am (18H)",minExp:270,slotDur:"15 Secs",trafficDaily:1200000,trafficMo:36000000,eyeballsDaily:1440000,eyeballsMo:43200000,pubRate1M:13800,pubRate2W:6900,bestRate2W:3400,payoutMO:2231.25,netVR:1168.75,netPct:0.344,reach:"1.2M/day",rate:3400,status:"Available"},
+  {id:"VR2001",vendor:"Monster Outdoor",name:"Jalan Persiaran Jaya / Persiaran Sabak Bernam, Selangor",cat:"DOOH",type:"LED Screen",loc:"Persiaran Jaya, Selangor",state:"Selangor",size:"15×40ft",pixels:"600×1560px",ops:"7.00am–12.00am (17H)",minExp:204,slotDur:"15 Secs",trafficDaily:75600,trafficMo:2268000,eyeballsDaily:90720,eyeballsMo:2721600,pubRate1M:9000,pubRate2W:4500,bestRate2W:3800,payoutMO:2500,netVR:1300,netPct:0.342,reach:"75.6K/day",rate:3800,status:"Available"},
+  {id:"VR2201",vendor:"Libroff",name:"Jalan Kuching (OHB) — Overhead Bridge",cat:"DOOH",type:"LED Screen",loc:"Jalan Kuching, KL",state:"KL",size:"15×60ft",pixels:"448×1792px",ops:"6.00am–1.00am (19H)",minExp:285,slotDur:"15 Secs",trafficDaily:85000,trafficMo:2550000,eyeballsDaily:102000,eyeballsMo:3060000,pubRate1M:15000,pubRate2W:7500,bestRate2W:3400,payoutMO:2250,netVR:1150,netPct:0.338,reach:"85K/day",rate:3400,status:"Available"},
+  {id:"VR2202",vendor:"Libroff",name:"Jalan Tun Razak (OHB) — Overhead Bridge",cat:"DOOH",type:"LED Screen",loc:"Jalan Tun Razak, KL",state:"KL",size:"15×60ft",pixels:"448×1792px",ops:"6.00am–1.00am (19H)",minExp:285,slotDur:"15 Secs",trafficDaily:120000,trafficMo:3600000,eyeballsDaily:144000,eyeballsMo:4320000,pubRate1M:15000,pubRate2W:7500,bestRate2W:3400,payoutMO:2250,netVR:1150,netPct:0.338,reach:"120K/day",rate:3400,status:"Available"},
+  {id:"VR3101",vendor:"Danwan",name:"Jalan Tunku Abdul Halim — 2 Screens",cat:"DOOH",type:"LED Screen",loc:"Jalan Tunku Abdul Halim, KL",state:"KL",size:"10×8.4ft",pixels:"768×640px",ops:"6.00am–1.00am (19H)",minExp:570,slotDur:"15 Secs",trafficDaily:60000,trafficMo:1800000,eyeballsDaily:72000,eyeballsMo:2160000,pubRate1M:26000,pubRate2W:13000,bestRate2W:2400,payoutMO:1600,netVR:800,netPct:0.333,reach:"60K/day",rate:2400,status:"Available"},
+  {id:"VR3103A",vendor:"Danwan",name:"Jalan Cochrane, Mytown Shopping Centre",cat:"DOOH",type:"LED Screen",loc:"Cochrane, KL",state:"KL",size:"30×20ft",pixels:"1080×720px",ops:"6.00am–1.00am (19H)",minExp:570,slotDur:"15 Secs",trafficDaily:73333,trafficMo:2200000,eyeballsDaily:87999,eyeballsMo:2639988,pubRate1M:30000,pubRate2W:15000,bestRate2W:3000,payoutMO:2000,netVR:1000,netPct:0.333,reach:"73.3K/day",rate:3000,status:"Available"},
+  {id:"VR0201",vendor:"Virtual Outlook",name:"Federal Highway, heading towards Kuala Lumpur",cat:"DOOH",type:"LED Screen",loc:"Federal Highway, KL",state:"KL",size:"30×20ft",pixels:"1200×720px",ops:"6.30am–12.30am (18H)",minExp:216,slotDur:"15 Secs",trafficDaily:200000,trafficMo:6000000,eyeballsDaily:240000,eyeballsMo:7200000,pubRate1M:12500,pubRate2W:6250,bestRate2W:2500,payoutMO:1750,netVR:750,netPct:0.3,reach:"200K/day",rate:2500,status:"Available"},
+  {id:"VR0204",vendor:"Virtual Outlook",name:"Old Klang Road, Mid Valley vicinity",cat:"DOOH",type:"LED Screen",loc:"Old Klang Road, KL",state:"KL",size:"30×20ft",pixels:"1200×720px",ops:"6.30am–12.30am (18H)",minExp:216,slotDur:"15 Secs",trafficDaily:150000,trafficMo:4500000,eyeballsDaily:180000,eyeballsMo:5400000,pubRate1M:12500,pubRate2W:6250,bestRate2W:2500,payoutMO:1750,netVR:750,netPct:0.3,reach:"150K/day",rate:2500,status:"Available"},
+  {id:"VR0507",vendor:"Imec Plus",name:"Persiaran Kuala Selangor, Shah Alam",cat:"DOOH",type:"LED Screen",loc:"Shah Alam, Selangor",state:"Selangor",size:"30×20ft",pixels:"864×576px",ops:"6.30am–12.30am (18H)",minExp:200,slotDur:"15 Secs",trafficDaily:355000,trafficMo:10650000,eyeballsDaily:426000,eyeballsMo:12780000,pubRate1M:12500,pubRate2W:6250,bestRate2W:2500,payoutMO:2000,netVR:500,netPct:0.2,reach:"355K/day",rate:2500,status:"Available"},
+  {id:"VR0615",vendor:"Spectrum Outdoor",name:"LDP Highway, near SS2 Petaling Jaya",cat:"DOOH",type:"LED Screen",loc:"LDP Highway, Selangor",state:"Selangor",size:"30×20ft",pixels:"384×576px",ops:"7.00am–1.00am (18H)",minExp:216,slotDur:"15 Secs",trafficDaily:150000,trafficMo:4500000,eyeballsDaily:180000,eyeballsMo:5400000,pubRate1M:22500,pubRate2W:11250,bestRate2W:2550,payoutMO:1750,netVR:800,netPct:0.314,reach:"150K/day",rate:2550,status:"Available"},
+  {id:"VR0604",vendor:"Spectrum Outdoor",name:"Jalan Tun Razak, near National Heart Institute",cat:"DOOH",type:"LED Screen",loc:"Jalan Tun Razak, KL",state:"KL",size:"30×20ft",pixels:"576×384px",ops:"7.00am–1.00am (18H)",minExp:216,slotDur:"15 Secs",trafficDaily:150000,trafficMo:4500000,eyeballsDaily:180000,eyeballsMo:5400000,pubRate1M:22500,pubRate2W:11250,bestRate2W:2550,payoutMO:1750,netVR:800,netPct:0.314,reach:"150K/day",rate:2550,status:"Available"},
+  {id:"VR0606",vendor:"Spectrum Outdoor",name:"MRR2 near Taman Bukit Maluri",cat:"DOOH",type:"LED Screen",loc:"Kepong, KL",state:"KL",size:"30×20ft",pixels:"384×576px",ops:"7.00am–1.00am (18H)",minExp:216,slotDur:"15 Secs",trafficDaily:150000,trafficMo:4500000,eyeballsDaily:180000,eyeballsMo:5400000,pubRate1M:22500,pubRate2W:11250,bestRate2W:1875,payoutMO:1166.67,netVR:708.33,netPct:0.378,reach:"150K/day",rate:1875,status:"Available"},
+  {id:"VR0607",vendor:"Spectrum Outdoor",name:"Jalan Damansara, nearby Bangsar",cat:"DOOH",type:"LED Screen",loc:"Bangsar, KL",state:"KL",size:"30×20ft",pixels:"576×864px",ops:"7.00am–1.00am (18H)",minExp:216,slotDur:"15 Secs",trafficDaily:300000,trafficMo:9000000,eyeballsDaily:360000,eyeballsMo:10800000,pubRate1M:22500,pubRate2W:11250,bestRate2W:2550,payoutMO:1750,netVR:800,netPct:0.314,reach:"300K/day",rate:2550,status:"Available"},
+  {id:"VR0608",vendor:"Spectrum Outdoor",name:"Lebuhraya Pantai Baru (NPE)",cat:"DOOH",type:"LED Screen",loc:"NPE, KL",state:"KL",size:"30×20ft",pixels:"576×864px",ops:"7.00am–1.00am (18H)",minExp:216,slotDur:"15 Secs",trafficDaily:150000,trafficMo:4500000,eyeballsDaily:180000,eyeballsMo:5400000,pubRate1M:22500,pubRate2W:11250,bestRate2W:1875,payoutMO:1166.67,netVR:708.33,netPct:0.378,reach:"150K/day",rate:1875,status:"Available"},
+  {id:"VR0614",vendor:"Spectrum Outdoor",name:"Sheraton Hotel, Petaling Jaya",cat:"DOOH",type:"LED Screen",loc:"Petaling Jaya, Selangor",state:"Selangor",size:"30×20ft",pixels:"720×1040px",ops:"7.00am–1.00am (18H)",minExp:216,slotDur:"15 Secs",trafficDaily:133333,trafficMo:4000000,eyeballsDaily:160000,eyeballsMo:4800000,pubRate1M:22500,pubRate2W:11250,bestRate2W:2550,payoutMO:1750,netVR:800,netPct:0.314,reach:"133K/day",rate:2550,status:"Available"},
+  {id:"VR0203",vendor:"Virtual Outlook",name:"Jalan Damansara, near KL Sentral vicinity",cat:"DOOH",type:"LED Screen",loc:"Damansara, KL",state:"KL",size:"30×20ft",pixels:"1200×720px",ops:"6.30am–12.30am (18H)",minExp:216,slotDur:"15 Secs",trafficDaily:250000,trafficMo:7500000,eyeballsDaily:300000,eyeballsMo:9000000,pubRate1M:12500,pubRate2W:6250,bestRate2W:2550,payoutMO:1750,netVR:800,netPct:0.314,reach:"250K/day",rate:2550,status:"Available"},
+  {id:"VR0708",vendor:"OOH Media",name:"Jalan Lapangan Terbang Sultan, near Subang Airport",cat:"DOOH",type:"LED Screen",loc:"Subang, Selangor",state:"Selangor",size:"31.5×22ft",pixels:"960×672px",ops:"6.30am–12.30am (18H)",minExp:200,slotDur:"15 Secs",trafficDaily:500000,trafficMo:15000000,eyeballsDaily:600000,eyeballsMo:18000000,pubRate1M:17500,pubRate2W:8750,bestRate2W:2500,payoutMO:2000,netVR:500,netPct:0.2,reach:"500K/day",rate:2500,status:"Available"},
+  {id:"VR0710",vendor:"OOH Media",name:"LDP Highway, near 1 Utama Shopping Centre",cat:"DOOH",type:"LED Screen",loc:"LDP, Selangor",state:"Selangor",size:"30×20ft",pixels:"960×672px",ops:"6.30am–12.30am (18H)",minExp:200,slotDur:"15 Secs",trafficDaily:315300,trafficMo:9459000,eyeballsDaily:378360,eyeballsMo:11350800,pubRate1M:17500,pubRate2W:8750,bestRate2W:2500,payoutMO:2000,netVR:500,netPct:0.2,reach:"315K/day",rate:2500,status:"Available"},
+  {id:"VR2903",vendor:"EraJaya",name:"LDP Kelana Jaya",cat:"DOOH",type:"LED Screen",loc:"Kelana Jaya, Selangor",state:"Selangor",size:"30×20ft",pixels:"880×600px",ops:"6.00am–1.00am (19H)",minExp:216,slotDur:"15 Secs",trafficDaily:140000,trafficMo:4200000,eyeballsDaily:168000,eyeballsMo:5040000,pubRate1M:15000,pubRate2W:7500,bestRate2W:3375,payoutMO:2500,netVR:875,netPct:0.259,reach:"140K/day",rate:3375,status:"Available"},
+  {id:"VR3903",vendor:"Amaze Ads",name:"Sprint Highway [KGPA], Damansara",cat:"DOOH",type:"LED Screen",loc:"Sprint Highway, KL",state:"KL",size:"30×20ft",pixels:"900×640px",ops:"7.00am–1.00am (18H)",minExp:216,slotDur:"15 Secs",trafficDaily:203000,trafficMo:6090000,eyeballsDaily:243600,eyeballsMo:7308000,pubRate1M:17500,pubRate2W:8750,bestRate2W:2625,payoutMO:1750,netVR:875,netPct:0.333,reach:"203K/day",rate:2625,status:"Available"},
+
+  // ─── REAL VR DOOH SITES (Visual EFX own inventory) ─────────────
+  {id:"VR0315",vendor:"Visual EFX",name:"Jalan Bukit Bintang, near Pavilion KL",cat:"DOOH",type:"LED Screen",loc:"Bukit Bintang, KL",state:"KL",size:"18×12ft",reach:"10.5M/mo",rate:22000,status:"Available"},
+  {id:"VR0317",vendor:"Visual EFX",name:"Park Royal Bukit Bintang, near TRX",cat:"DOOH",type:"LED Screen",loc:"Bukit Bintang, KL",state:"KL",size:"18×12ft",reach:"10.5M/mo",rate:20000,status:"Available"},
+  {id:"VR0707",vendor:"Visual EFX",name:"Sprint Highway, near Damansara Intan",cat:"DOOH",type:"LED Screen",loc:"Damansara, Selangor",state:"Selangor",size:"32×21.5ft",reach:"7.2M/mo",rate:18000,status:"Available"},
+  {id:"VR0202",vendor:"Visual EFX",name:"Jalan Damansara, Bukit Damansara",cat:"DOOH",type:"LED Screen",loc:"Bukit Damansara, KL",state:"KL",size:"30×20ft",reach:"9M/mo",rate:12000,status:"Available"},
+  {id:"VR0206",vendor:"Visual EFX",name:"Jalan Sungei Besi, next to Bandar Malaysia",cat:"DOOH",type:"LED Screen",loc:"Sungei Besi, KL",state:"KL",size:"30×20ft",reach:"4.5M/mo",rate:10000,status:"Available"},
+  {id:"VR4401",vendor:"Visual EFX",name:"Jalan Tun Razak / Jalan Ampang towards KLCC/TRX",cat:"DOOH",type:"LED Screen",loc:"KLCC, KL",state:"KL",size:"60×40ft",reach:"6.33M/mo",rate:32000,status:"Available"},
+  {id:"VR0904",vendor:"Visual EFX",name:"Jalan Hang Tuah, near BBCC",cat:"DOOH",type:"LED Screen",loc:"Hang Tuah, KL",state:"KL",size:"12×20ft",reach:"2.48M/mo",rate:8000,status:"Available"},
+  {id:"VR0906",vendor:"Visual EFX",name:"Jalan Ipoh",cat:"DOOH",type:"LED Screen",loc:"Jalan Ipoh, KL",state:"KL",size:"9×15ft",reach:"1.4M/mo",rate:5500,status:"Available"},
+  {id:"VR0914",vendor:"Visual EFX",name:"Jalan Damansara (TTDI)",cat:"DOOH",type:"LED Screen",loc:"TTDI, Selangor",state:"Selangor",size:"12×20ft",reach:"1.95M/mo",rate:8000,status:"Available"},
+  {id:"VR0915",vendor:"Visual EFX",name:"Jalan Sri Hartamas",cat:"DOOH",type:"LED Screen",loc:"Sri Hartamas, KL",state:"KL",size:"9×15ft",reach:"765K/mo",rate:5000,status:"Available"},
+  {id:"VR0918",vendor:"Visual EFX",name:"Jalan Kuching",cat:"DOOH",type:"LED Screen",loc:"Jalan Kuching, KL",state:"KL",size:"30×20ft",reach:"1.42M/mo",rate:9000,status:"Available"},
+  {id:"VR2203A",vendor:"Visual EFX",name:"Jalan Maharajalela (OHB) — Towards City Centre",cat:"DOOH",type:"LED Screen",loc:"Maharajalela, KL",state:"KL",size:"12.6×60ft",reach:"3.6M/mo",rate:18000,status:"Available"},
+  {id:"VR3902",vendor:"Visual EFX",name:"KL-Seremban Highway near Giant Desa Petaling",cat:"DOOH",type:"LED Screen",loc:"Desa Petaling, KL",state:"KL",size:"60×40ft",reach:"16.8M/mo",rate:35000,status:"Available"},
+  {id:"VR0101",vendor:"Visual EFX",name:"KL South, Jalan Puchong, near Old Klang Road",cat:"DOOH",type:"LED Screen",loc:"Jalan Puchong, KL",state:"KL",size:"50×30ft",reach:"2.4M/mo",rate:14000,status:"Available"},
+  {id:"VR3604",vendor:"Visual EFX",name:"Simpang Tadaka, Tawau",cat:"DOOH",type:"LED Screen",loc:"Tawau, Sabah",state:"Sabah",size:"N/A",reach:"360K/mo",rate:10000,status:"Available"},
+  {id:"VR0330",vendor:"Visual EFX",name:"DBKK Building, Jalan Bandaran, Kota Kinabalu",cat:"DOOH",type:"LED Screen",loc:"Kota Kinabalu, Sabah",state:"Sabah",size:"N/A",reach:"540K/mo",rate:10000,status:"Available"},
+  {id:"VR5901A",vendor:"Visual EFX",name:"Jalan Tar, Yaakub Petra Jaya, Kuching (Towards Petra Jaya)",cat:"DOOH",type:"LED Screen",loc:"Petra Jaya, Sarawak",state:"Sarawak",size:"N/A",reach:"450K/mo",rate:10000,status:"Available"},
+  {id:"VR5902A",vendor:"Visual EFX",name:"Tun Salahuddin Billboard, Kuching (From Kuching to Petra Jaya)",cat:"DOOH",type:"LED Screen",loc:"Kuching, Sarawak",state:"Sarawak",size:"N/A",reach:"600K/mo",rate:10000,status:"Available"},
+  {id:"VR5902B",vendor:"Visual EFX",name:"Tun Salahuddin Billboard, Kuching (From Petra Jaya to Kuching)",cat:"DOOH",type:"LED Screen",loc:"Kuching, Sarawak",state:"Sarawak",size:"N/A",reach:"600K/mo",rate:10000,status:"Available"},
+  // ─── RETAIL MEDIA (Visual Retale Retail Domination — 5,244+ stores) ──
+  {id:"RM-MY-LED",vendor:"MYDIN",name:"MYDIN LED/TV Screen — 27 stores national",cat:"Retail Media",type:"In-Store LED",loc:"National",state:"National",size:"In-store",reach:"294K/mo per store",rate:8000,status:"Available"},
+  {id:"RM-MY-SHELF",vendor:"MYDIN",name:"MYDIN Shelf Banner — 27 stores national",cat:"Retail Media",type:"Shelf Banner",loc:"National",state:"National",size:"Shelf strip",reach:"294K/mo per store",rate:2500,status:"Available"},
+  {id:"RM-MY-WALL",vendor:"MYDIN",name:"MYDIN Wall Banner — 27 stores national",cat:"Retail Media",type:"Wall Banner",loc:"National",state:"National",size:"Full wall",reach:"294K/mo per store",rate:4500,status:"Available"},
+  {id:"RM-MY-TRAV",vendor:"MYDIN",name:"MYDIN Travelator — 27 stores national",cat:"Retail Media",type:"Travelator",loc:"National",state:"National",size:"Travelator panels",reach:"294K/mo per store",rate:6000,status:"Available"},
+  {id:"RM-AB-LED",vendor:"AEON BIG",name:"AEON BIG LED/TV Screen — 21 stores national",cat:"Retail Media",type:"In-Store LED",loc:"National",state:"National",size:"In-store",reach:"163K/mo per store",rate:7500,status:"Available"},
+  {id:"RM-AB-SHELF",vendor:"AEON BIG",name:"AEON BIG Shelf Banner — 21 stores national",cat:"Retail Media",type:"Shelf Banner",loc:"National",state:"National",size:"Shelf strip",reach:"163K/mo per store",rate:2200,status:"Available"},
+  {id:"RM-AB-DIGI",vendor:"AEON BIG",name:"AEON BIG Digital Standee — 21 stores national",cat:"Retail Media",type:"Digital Standee",loc:"National",state:"National",size:"55in portrait",reach:"163K/mo per store",rate:5000,status:"Available"},
+  {id:"RM-AB-TRAV",vendor:"AEON BIG",name:"AEON BIG Travelator — 21 stores national",cat:"Retail Media",type:"Travelator",loc:"National",state:"National",size:"Travelator panels",reach:"163K/mo per store",rate:5500,status:"Available"},
+  {id:"RM-LS-SHELF",vendor:"Lotus's",name:"Lotus's Shelf Banner — 70 stores national",cat:"Retail Media",type:"Shelf Banner",loc:"National",state:"National",size:"Shelf strip",reach:"206K/mo per store",rate:2800,status:"Available"},
+  {id:"RM-LS-TRAV",vendor:"Lotus's",name:"Lotus's Travelator — 70 stores national",cat:"Retail Media",type:"Travelator",loc:"National",state:"National",size:"Travelator panels",reach:"206K/mo per store",rate:6500,status:"Available"},
+  {id:"RM-LS-DIGI",vendor:"Lotus's",name:"Lotus's Digital Standee — 70 stores national",cat:"Retail Media",type:"Digital Standee",loc:"National",state:"National",size:"55in portrait",reach:"206K/mo per store",rate:5500,status:"Available"},
+  {id:"RM-GI-LED",vendor:"Giant",name:"Giant LED/TV Screen — 19 hypermarket stores",cat:"Retail Media",type:"In-Store LED",loc:"National",state:"National",size:"In-store",reach:"228K/mo per store",rate:7000,status:"Available"},
+  {id:"RM-GI-SHELF",vendor:"Giant",name:"Giant Shelf Banner — 19 hypermarket stores",cat:"Retail Media",type:"Shelf Banner",loc:"National",state:"National",size:"Shelf strip",reach:"228K/mo per store",rate:2500,status:"Available"},
+  {id:"RM-KK-LED",vendor:"KK Mart",name:"KK Mart LED/TV Screen — 905 stores national",cat:"Retail Media",type:"In-Store LED",loc:"National",state:"National",size:"In-store TV",reach:"25.7K/mo per store",rate:1500,status:"Available"},
+  {id:"RM-KK-HANG",vendor:"KK Mart",name:"KK Mart Hanging Mobile — 905 stores national",cat:"Retail Media",type:"Hanging Mobile",loc:"National",state:"National",size:"A2 double-sided",reach:"25.7K/mo per store",rate:800,status:"Available"},
+  {id:"RM-7E-SHB",vendor:"7-Eleven",name:"7-Eleven Shelf Header Board — 2,409 stores",cat:"Retail Media",type:"Shelf Header Board",loc:"National",state:"National",size:"Shelf header",reach:"28.6K/mo per store",rate:1200,status:"Available"},
+  {id:"RM-7E-POS",vendor:"7-Eleven",name:"7-Eleven POS Digital Screen — 2,409 stores",cat:"Retail Media",type:"POS Digital Screen",loc:"National",state:"National",size:"15in checkout",reach:"28.6K/mo per store",rate:2000,status:"Available"},
+  {id:"RM-7E-CHILL",vendor:"7-Eleven",name:"7-Eleven Chiller Sticker — 2,409 stores",cat:"Retail Media",type:"Chiller Sticker",loc:"National",state:"National",size:"Chiller door panel",reach:"28.6K/mo per store",rate:900,status:"Available"},
+  {id:"RM-7E-DOOR",vendor:"7-Eleven",name:"7-Eleven Entrance Door Facade — 2,409 stores",cat:"Retail Media",type:"Entrance Door Facade",loc:"National",state:"National",size:"Door facade",reach:"28.6K/mo per store",rate:1100,status:"Available"},
+  {id:"RM-FM-LED",vendor:"FamilyMart",name:"FamilyMart LED Screen — 445 stores national",cat:"Retail Media",type:"In-Store LED",loc:"National",state:"National",size:"In-store TV",reach:"18.6K/mo per store",rate:2500,status:"Available"},
+  {id:"RM-FM-HANG",vendor:"FamilyMart",name:"FamilyMart Hanging Mobile — 445 stores",cat:"Retail Media",type:"Hanging Mobile",loc:"National",state:"National",size:"A2 double-sided",reach:"18.6K/mo per store",rate:1200,status:"Available"},
+  {id:"RM-MN-LED",vendor:"myNEWS",name:"myNEWS LED Screen — 503 stores national",cat:"Retail Media",type:"In-Store LED",loc:"National",state:"National",size:"In-store TV",reach:"22.9K/mo per store",rate:2000,status:"Available"},
+  {id:"RM-EC-SHELF",vendor:"Econsave",name:"Econsave Shelf Banner — 177 stores national",cat:"Retail Media",type:"Shelf Banner",loc:"National",state:"National",size:"Shelf strip",reach:"176.5K/mo per store",rate:2000,status:"Available"},
+
   // HIGHWAY OOH
   {id:"BTO-ELITE-001",vendor:"Big Tree",name:"ELITE Highway KM 14.2 Northbound",cat:"OOH",type:"Billboard",loc:"Subang, Selangor",state:"Selangor",size:"40×20ft",reach:"120K/day",rate:18000,status:"Available"},
   {id:"BTO-PLUS-002",vendor:"Big Tree",name:"PLUS Highway KM 287 Northbound",cat:"OOH",type:"Unipole",loc:"Rawang, Selangor",state:"Selangor",size:"30×15ft",reach:"95K/day",rate:14000,status:"Available"},
@@ -560,21 +992,23 @@ function Inventory(){
       <Card>
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead><tr className="border-b border-gray-100">{["ID","Vendor","Name","Cat","Type","Location","Size","Reach","Rate/mo","Status",""].map(h=><th key={h} className="text-left px-3 py-3 text-xs font-semibold text-gray-400 uppercase whitespace-nowrap">{h}</th>)}</tr></thead>
+            <thead><tr className="border-b border-gray-100">{["Site Code","Vendor/MO","Location","Cat","Type","Pixels","Ops Hours","Min Exp/Day","Pub Rate 1M","Pub Rate 2W","Eyeballs/mo","Status",""].map(h=><th key={h} className="text-left px-3 py-3 text-xs font-semibold text-gray-400 uppercase whitespace-nowrap">{h}</th>)}</tr></thead>
             <tbody className="divide-y divide-gray-50">
               {paginated.map((m,i)=>(
                 <tr key={i} className="hover:bg-gray-50 cursor-pointer">
-                  <td className="px-3 py-2.5 text-xs font-mono text-gray-400 whitespace-nowrap">{m.id}</td>
+                  <td className="px-3 py-2.5 text-xs font-bold font-mono text-teal-700 whitespace-nowrap">{m.id}</td>
                   <td className="px-3 py-2.5 text-xs text-gray-600 whitespace-nowrap">{m.vendor}</td>
-                  <td className="px-3 py-2.5 text-xs font-semibold text-gray-900 max-w-[200px] truncate">{m.name}</td>
-                  <td className="px-3 py-2.5"><Bdg t={m.cat} c={m.cat==="OOH"?"purple":m.cat==="Digital OOH"?"teal":m.cat==="Print"?"blue":m.cat==="Radio"?"orange":m.cat==="TV"?"red":m.cat==="Transit"?"amber":"gray"}/></td>
+                  <td className="px-3 py-2.5 text-xs font-semibold text-gray-900 max-w-[180px] truncate">{m.name}</td>
+                  <td className="px-3 py-2.5"><Bdg t={m.cat} c={m.cat==="OOH"?"purple":m.cat==="DOOH"?"teal":m.cat==="Print"?"blue":m.cat==="Radio"?"orange":m.cat==="TV"?"red":m.cat==="Transit"?"amber":m.cat==="Retail Media"?"green":"gray"}/></td>
                   <td className="px-3 py-2.5 text-xs text-gray-500 whitespace-nowrap">{m.type}</td>
-                  <td className="px-3 py-2.5 text-xs text-gray-500 whitespace-nowrap">{m.loc}</td>
-                  <td className="px-3 py-2.5 text-xs font-mono text-gray-500 whitespace-nowrap">{m.size}</td>
-                  <td className="px-3 py-2.5 text-xs text-gray-600 whitespace-nowrap">{m.reach}</td>
-                  <td className="px-3 py-2.5 text-xs font-black text-gray-900 whitespace-nowrap">{m.rate>=1000?`RM ${m.rate.toLocaleString()}`:m.rate>0?`RM ${m.rate}/unit`:"—"}</td>
+                  <td className="px-3 py-2.5 text-xs font-mono text-gray-500 whitespace-nowrap">{m.pixels||m.size||"—"}</td>
+                  <td className="px-3 py-2.5 text-xs text-gray-500 whitespace-nowrap">{m.ops||"—"}</td>
+                  <td className="px-3 py-2.5 text-xs text-gray-600 whitespace-nowrap">{m.minExp?`${m.minExp}/day`:"—"}</td>
+                  <td className="px-3 py-2.5 text-xs text-gray-500 whitespace-nowrap">{m.pubRate1M?`RM ${m.pubRate1M.toLocaleString()}`:"—"}</td>
+                  <td className="px-3 py-2.5 text-xs text-gray-500 whitespace-nowrap">{m.pubRate2W?`RM ${m.pubRate2W.toLocaleString()}`:"—"}</td>
+                  <td className="px-3 py-2.5 text-xs text-gray-600 whitespace-nowrap">{m.eyeballsMo?(m.eyeballsMo>=1000000?(m.eyeballsMo/1000000).toFixed(1)+"M":m.eyeballsMo>=1000?Math.round(m.eyeballsMo/1000)+"K":m.eyeballsMo)+"/mo":m.reach||"—"}</td>
                   <td className="px-3 py-2.5"><Bdg t={m.status} c={m.status==="Available"?"green":m.status==="Booked"?"orange":"amber"}/></td>
-                  <td className="px-3 py-2.5"><button className="text-xs text-purple-600 font-semibold hover:underline whitespace-nowrap">+ Add to Proposal</button></td>
+                  <td className="px-3 py-2.5"><button className="text-xs text-purple-600 font-semibold hover:underline whitespace-nowrap">+ Add</button></td>
                 </tr>
               ))}
             </tbody>
@@ -599,7 +1033,9 @@ function Inventory(){
 
 // ─── SCREEN: MEDIA ORDER & PO (AI PREDICTIVE PRICING) ─────────────
 function Orders({role="admin"}){
-  const canSeeCost=["admin","commercial","finance"].includes(role);
+  const currentStaff = STAFF_PROFILES[role]||STAFF_PROFILES.natasha;
+  const canSeeCost = currentStaff.canSeeSupplierCost===true;
+  const noPricing  = currentStaff.noPricing===true;
   const canSeePO=["admin","commercial","finance"].includes(role);
   const [selectedSite,setSelectedSite]=useState(0);
   const [negoPrice,setNegoPrice]=useState(13800);
@@ -681,13 +1117,13 @@ function Orders({role="admin"}){
                   <div className="text-xs font-bold px-2 py-0.5 rounded text-teal-400 border border-teal-400/30 bg-teal-400/10">{site.prediction.confidence}% confidence</div>
                 </div>
                 <div className="flex flex-col gap-2 mb-3">
-                  {[{l:"Vendor Quoted",v:`RM ${site.rateCard.toLocaleString()}`,c:"text-white"},{l:"Historical Avg",v:`RM ${Math.round(site.history.reduce((a,h)=>a+h.paid,0)/site.history.length).toLocaleString()}`,c:"text-blue-300"},{l:"Best Ever",v:`RM ${Math.min(...site.history.map(h=>h.paid)).toLocaleString()}`,c:"text-green-400"},{l:"Fair Range",v:`RM ${site.prediction.min.toLocaleString()} – ${site.prediction.likely.toLocaleString()}`,c:"text-teal-300"}].map(r=>(
+                  {[{l:"Published Rate (2W)",v:`RM ${site.rateCard.toLocaleString()}`,c:"text-white"},{l:"Avg Payout to MO",v:`RM ${Math.round(site.history.reduce((a,h)=>a+h.paid,0)/site.history.length).toLocaleString()}`,c:"text-blue-300"},{l:"Lowest MO Payout",v:`RM ${Math.min(...site.history.map(h=>h.paid)).toLocaleString()}`,c:"text-green-400"},{l:"Fair Range",v:`RM ${site.prediction.min.toLocaleString()} – ${site.prediction.likely.toLocaleString()}`,c:"text-teal-300"}].map(r=>(
                     <div key={r.l} className="flex justify-between"><span className="text-xs text-white/40">{r.l}</span><span className={`text-xs font-bold ${r.c}`}>{r.v}</span></div>
                   ))}
                 </div>
                 <div className="rounded-lg p-2.5 mb-2" style={{background:"rgba(0,212,170,0.1)",border:"1px solid rgba(0,212,170,0.4)"}}>
                   <div className="flex justify-between items-center">
-                    <span className="text-xs font-bold text-teal-400">🎯 Suggested open</span>
+                    <span className="text-xs font-bold text-teal-400">🎯 Suggested Payout to MO</span>
                     <span className="text-sm font-black text-teal-400">RM {site.prediction.min.toLocaleString()}</span>
                   </div>
                 </div>
@@ -697,36 +1133,46 @@ function Orders({role="admin"}){
 
               {/* GP Calculator + Booking History */}
               <div className="flex flex-col gap-3">
-                {/* GP Calculator */}
+                {/* Net to VR Calculator — matches VR actual Excel format */}
                 <div className="rounded-2xl p-4" style={{background:"#0C1F3F",flex:1}}>
-                  <div className="text-xs font-bold uppercase tracking-widest text-white/30 mb-3">GP Calculator</div>
-                  <div className="mb-3">
-                    <div className="text-xs text-white/40 mb-1">Client billed (Media Order)</div>
+                  <div className="text-xs font-bold uppercase tracking-widest text-white/30 mb-1">Net to VR Calculator</div>
+                  <div className="text-xs text-white/20 mb-3 italic">Net to VR (%) = (Best Rate − Payout to MO) ÷ Best Rate</div>
+                  <div className="mb-2">
+                    <div className="text-xs text-white/40 mb-1">Best Rate — 2 Weeks (Client Pays VR)</div>
                     <input type="number" value={clientBilled} onChange={e=>{setClientBilled(Number(e.target.value));}} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white font-bold outline-none" style={{fontFamily:"inherit"}}/>
                   </div>
                   <div className="mb-3">
-                    <div className="flex justify-between text-xs text-white/40 mb-1"><span>Nego price</span><span style={{color:"#00D4AA"}}>RM {negoPrice.toLocaleString()}</span></div>
+                    <div className="flex justify-between text-xs text-white/40 mb-1"><span>Payout to MO — 2 Weeks (VR pays Media Owner)</span><span style={{color:"#00D4AA"}}>RM {negoPrice.toLocaleString()}</span></div>
                     <input type="range" min={site.prediction.min} max={site.rateCard} step={100} value={negoPrice} onChange={e=>setNegoPrice(Number(e.target.value))} className="w-full" style={{accentColor:"#00D4AA"}}/>
                     <div className="flex justify-between text-xs text-white/30 mt-1"><span>RM {site.prediction.min.toLocaleString()}</span><span>RM {site.rateCard.toLocaleString()}</span></div>
                   </div>
-                  <div className="rounded-xl p-3 text-center mb-2" style={{background:`rgba(${gpPct>=40?"22,163,74":gpPct>=30?"215,119,6":"220,38,38"},0.1)`,border:`1px solid rgba(${gpPct>=40?"22,163,74":gpPct>=30?"215,119,6":"220,38,38"},0.3)`}}>
-                    <div className="text-2xl font-black" style={{color:gpColor}}>{gpPct.toFixed(1)}%</div>
-                    <div className="text-xs mt-0.5" style={{color:gpColor,opacity:0.7}}>Gross Profit · RM {gpRM.toLocaleString()}</div>
+                  <div className="grid grid-cols-2 gap-2 mb-3">
+                    <div className="bg-white/5 rounded-lg p-2 text-center"><div className="text-xs text-white/30 mb-0.5">Net to VR (RM)</div><div className="text-base font-black" style={{color:"#00D4AA"}}>RM {gpRM.toLocaleString()}</div></div>
+                    <div className="rounded-lg p-2 text-center" style={{background:`rgba(${gpPct>=33?"0,212,170":gpPct>=30?"215,119,6":"220,38,38"},0.15)`,border:`1px solid rgba(${gpPct>=33?"0,212,170":gpPct>=30?"215,119,6":"220,38,38"},0.4)`}}>
+                      <div className="text-xs text-white/30 mb-0.5">Net to VR (%)</div>
+                      <div className="text-2xl font-black" style={{color:gpPct>=33?"#00D4AA":gpPct>=30?"#FAC775":"#F09595"}}>{gpPct.toFixed(1)}%</div>
+                    </div>
+                  </div>
+                  <div className="bg-white/5 rounded-lg p-2.5 mb-3">
+                    <div className="text-xs text-white/20 mb-1.5 italic">Typical VR target: ~33–34% Net to VR</div>
+                    {[{l:"Published Rate (2W)",v:`RM ${site.rateCard.toLocaleString()}`},{l:"Best Rate (Client)",v:`RM ${clientBilled.toLocaleString()}`},{l:"Payout to MO",v:`RM ${negoPrice.toLocaleString()}`},{l:"Net to VR",v:`RM ${gpRM.toLocaleString()}`}].map(r=>(
+                      <div key={r.l} className="flex justify-between text-xs py-0.5 border-b border-white/5 last:border-0"><span className="text-white/40">{r.l}</span><span className="text-white font-bold">{r.v}</span></div>
+                    ))}
                   </div>
                   {gpPct<30&&gpPct>0&&(
                     <div className="rounded-xl p-3" style={{background:"rgba(220,38,38,0.1)",border:"1px solid rgba(220,38,38,0.3)"}}>
                       <div className="text-xs font-bold text-red-400 flex items-center gap-1"><AlertTriangle size={11}/>Special Approval Required</div>
-                      <div className="text-xs text-red-300/70 mt-1">GP below 30%. Director sign-off needed before PO can be raised.</div>
-                      <button className="w-full mt-2 py-1.5 rounded-lg text-xs font-bold text-red-400 border border-red-400/30 bg-transparent" style={{fontFamily:"inherit"}}>Request Approval →</button>
+                      <div className="text-xs text-red-300/70 mt-1">Net to VR below 30%. Director sign-off needed before PO can be raised.</div>
+                      <button className="w-full mt-2 py-1.5 rounded-lg text-xs font-bold text-red-400 border border-red-400/30 bg-transparent" style={{fontFamily:"inherit"}}>Request Director Approval →</button>
                     </div>
                   )}
-                  {gpPct>=40&&<div className="text-xs text-green-400/70 text-center">✅ Healthy margin — good to proceed</div>}
-                  {gpPct>=30&&gpPct<40&&<div className="text-xs text-amber-400/70 text-center">⚠️ Acceptable — negotiate harder</div>}
+                  {gpPct>=33&&<div className="text-xs text-teal-400/70 text-center">✅ On target — proceed</div>}
+                  {gpPct>=30&&gpPct<33&&<div className="text-xs text-amber-400/70 text-center">⚠️ Below target — negotiate lower MO payout</div>}
                 </div>
 
                 {/* Booking history mini */}
                 <div className="rounded-2xl p-4" style={{background:"#0C1F3F"}}>
-                  <div className="text-xs font-bold uppercase tracking-widest text-white/30 mb-2">Booking History</div>
+                  <div className="text-xs font-bold uppercase tracking-widest text-white/30 mb-2">Historical Payout to MO</div>
                   {site.history.map((h,i)=>(
                     <div key={i} className="flex items-center gap-2 mb-1.5">
                       <span className="text-xs text-white/30 w-20 flex-shrink-0">{h.period}</span>
@@ -1615,23 +2061,523 @@ function OwnerView({go}){
   );
 }
 
-// ─── ROLE CONFIG ─────────────────────────────────────────────────
-const ROLES = {
-  owner:      { label:"Sai (Owner)",      color:"#0C1F3F", avatar:"SA",
-                screens:["owner","dashboard","leads","brief","proposals","pipeline","inventory","orders","creative","execution","timetracker","invoicing","finance","collection","reports"] },
-  admin:      { label:"Admin / Director", color:"#6D28D9", avatar:"AD",
-                screens:["dashboard","leads","brief","proposals","pipeline","inventory","orders","creative","execution","timetracker","invoicing","finance","collection","reports"] },
-  sales:      { label:"Sales",            color:"#0D9488", avatar:"NT",
-                screens:["dashboard","leads","brief","proposals","pipeline","orders","timetracker","reports"] },
-  channel:    { label:"Channel Team",     color:"#EA580C", avatar:"JD",
-                screens:["dashboard","leads","brief","proposals","pipeline","creative","execution","timetracker"] },
-  commercial: { label:"Commercial",       color:"#D97706", avatar:"AR",
-                screens:["dashboard","leads","inventory","orders","pipeline","timetracker","reports"] },
-  creative:   { label:"Creative",         color:"#DC2626", avatar:"SL",
-                screens:["dashboard","proposals","creative","execution","timetracker"] },
-  finance:    { label:"Finance",          color:"#2563EB", avatar:"FL",
-                screens:["dashboard","invoicing","finance","collection","reports","timetracker"] },
+
+// ─── STAFF PROFILES & GREETINGS ─────────────────────────────────
+const STAFF_PROFILES = {
+  sai:      { name:"Sai",      dept:"Owner",          color:"#0C1F3F", avatar:"SA", 
+              greeting:"When Sai asks 'quick update?', the whole system starts preparing evidence.",
+              quote:"The whole company runs so Sai can ask better questions.",
+              canSeeSupplierCost:true,  noPricing:false, driverOnly:false, noTarget:false },
+  michelle: { name:"Michelle", dept:"Top Management", color:"#6D28D9", avatar:"ML",
+              greeting:"Good morning, Michelle. Sales, Channel, and Marketing are all under your radar today.",
+              quote:"Michelle's morning briefing is basically a board meeting in 15 minutes.",
+              canSeeSupplierCost:false, noPricing:false, driverOnly:false, noTarget:false },
+  natasha:  { name:"Natasha",  dept:"Sales",          color:"#0D9488", avatar:"NT",
+              greeting:"Good morning, Natasha. Time to turn follow-ups into closed deals.",
+              quote:"Targets are just numbers until Natasha starts negotiating.",
+              canSeeSupplierCost:false, noPricing:false, driverOnly:false, noTarget:false },
+  karan:    { name:"Karan",    dept:"Sales",          color:"#0D9488", avatar:"KR",
+              greeting:"Good morning, Karan. Your pipeline won't close itself — let's move.",
+              quote:"Karan treats every lead like it's the last deal of the quarter.",
+              canSeeSupplierCost:false, noPricing:false, driverOnly:false, noTarget:false },
+  azrina:   { name:"Azrina",   dept:"Sales Support",  color:"#0891B2", avatar:"AZ",
+              greeting:"Good morning, Azrina. The team runs smoother because you're here.",
+              quote:"No target, still somehow solving everyone's problem.",
+              canSeeSupplierCost:false, noPricing:false, driverOnly:false, noTarget:true  },
+  shazia:   { name:"Shazia",   dept:"Channel HOD",    color:"#EA580C", avatar:"SZ",
+              greeting:"Good morning, Shazia. Let's keep the sites moving and the media network aligned.",
+              quote:"Shazia doesn't chase sites. Sites emotionally prepare for Shazia.",
+              canSeeSupplierCost:false, noPricing:false, driverOnly:false, noTarget:false },
+  meiyin:   { name:"Mei Yin",  dept:"Channel",        color:"#EA580C", avatar:"MY",
+              greeting:"Good morning, Mei Yin. Sites need confirming, vendors need chasing.",
+              quote:"Mei Yin tracks 20 sites and still replies the fastest.",
+              canSeeSupplierCost:false, noPricing:false, driverOnly:false, noTarget:false },
+  nicole:   { name:"Nicole",   dept:"Channel",        color:"#EA580C", avatar:"NC",
+              greeting:"Good morning, Nicole. Your checklist is ready — let's execute.",
+              quote:"Nicole's execution checklist is the reason deadlines exist.",
+              canSeeSupplierCost:false, noPricing:false, driverOnly:false, noTarget:false },
+  yash:     { name:"Yash",     dept:"Marketing",      color:"#7C3AED", avatar:"YS",
+              greeting:"Good morning, Yash. Campaign visibility starts with one sharp idea.",
+              quote:"Yash turns one campaign idea into ten slides and one visibility strategy.",
+              canSeeSupplierCost:false, noPricing:false, driverOnly:false, noTarget:false },
+  kavita:   { name:"Kavita",   dept:"Operations",     color:"#DC2626", avatar:"KV",
+              greeting:"Good morning, Kavita. Let's turn today's chaos into a proper action plan.",
+              quote:"Kavita's department: where chaos goes to get a schedule.",
+              canSeeSupplierCost:true,  noPricing:false, driverOnly:false, noTarget:false },
+  mahen:    { name:"Mahen",    dept:"Commercial HOD", color:"#D97706", avatar:"MH",
+              greeting:"Good morning, Mahen. Pricing, proposals, and protection mode are now online.",
+              quote:"Mahen protects pricing like it's national security.",
+              canSeeSupplierCost:true,  noPricing:false, driverOnly:false, noTarget:false },
+  najwa:    { name:"Najwa",    dept:"Commercial",     color:"#D97706", avatar:"NJ",
+              greeting:"Good morning, Najwa. Vendors are waiting, POs need moving.",
+              quote:"Najwa makes sure every PO is airtight before it leaves the building.",
+              canSeeSupplierCost:false, noPricing:false, driverOnly:false, noTarget:false },
+  apit:     { name:"Apit",     dept:"Commercial",     color:"#B45309", avatar:"AP",
+              greeting:"Good morning, Apit. Plenty to support today — let's go.",
+              quote:"Apit can help with everything except pricing. Pricing is a forbidden kingdom.",
+              canSeeSupplierCost:false, noPricing:true,  driverOnly:false, noTarget:false },
+  aliff:    { name:"Aliff",    dept:"Creative HOD",   color:"#16A34A", avatar:"AL",
+              greeting:"Good morning, Aliff. May today's revisions be fewer than yesterday's.",
+              quote:"Aliff's team can survive deadlines, revisions, and 'just make it pop'.",
+              canSeeSupplierCost:false, noPricing:false, driverOnly:false, noTarget:false },
+  nazri:    { name:"Nazri",    dept:"Creative",       color:"#16A34A", avatar:"NZ",
+              greeting:"Good morning, Nazri. The artwork needs you and so does Aliff.",
+              quote:"Nazri can redesign anything — except the client's taste.",
+              canSeeSupplierCost:false, noPricing:false, driverOnly:false, noTarget:false },
+  shariff:  { name:"Shariff",  dept:"Creative",       color:"#16A34A", avatar:"SF",
+              greeting:"Good morning, Shariff. Let's make something today that doesn't need three revisions.",
+              quote:"Shariff's best work always happens 10 minutes before the deadline.",
+              canSeeSupplierCost:false, noPricing:false, driverOnly:false, noTarget:false },
+  phylicia: { name:"Phylicia", dept:"Finance HOD",    color:"#2563EB", avatar:"PH",
+              greeting:"Good morning, Phylicia. Numbers, claims, and payment reality checks await.",
+              quote:"Phylicia doesn't reject claims. She gently introduces them to reality.",
+              canSeeSupplierCost:true,  noPricing:false, driverOnly:false, noTarget:false },
+  nik:      { name:"Nik",      dept:"Finance",        color:"#2563EB", avatar:"NK",
+              greeting:"Good morning, Nik. The ledger needs balancing and the invoices need love.",
+              quote:"Nik reconciles AutoCount faster than most people open Excel.",
+              canSeeSupplierCost:true,  noPricing:false, driverOnly:false, noTarget:false },
+  nazreey:  { name:"Nazreey",  dept:"Driver / HRA",   color:"#6B7280", avatar:"NR",
+              greeting:"Good morning, Nazreey. Ready for the day's runs and admin.",
+              quote:"Nazreey moves people, documents, and sometimes the entire day's timeline.",
+              canSeeSupplierCost:false, noPricing:true,  driverOnly:true,  noTarget:false },
 };
+
+// Screen access per role type
+const ROLE_SCREENS = {
+  owner:          ["owner","dashboard","leads","brief","proposals","pipeline","inventory","orders","creative","execution","timetracker","invoicing","finance","collection","reports","hr"],
+  michelle:       ["dashboard","leads","brief","proposals","pipeline","creative","execution","reports","hr"],
+  sales:          ["dashboard","leads","brief","proposals","pipeline","orders","timetracker","reports","hr"],
+  sales_support:  ["dashboard","leads","proposals","timetracker","hr"],
+  channel_hod:    ["dashboard","leads","brief","proposals","pipeline","creative","execution","timetracker","reports","hr"],
+  channel:        ["dashboard","brief","proposals","pipeline","creative","execution","timetracker","hr"],
+  marketing:      ["dashboard","brief","proposals","creative","execution","timetracker","reports","hr"],
+  operations:     ["dashboard","leads","brief","proposals","pipeline","inventory","orders","creative","execution","timetracker","invoicing","finance","collection","reports","hr"],
+  commercial_hod: ["dashboard","leads","inventory","orders","pipeline","timetracker","reports","hr"],
+  commercial:     ["dashboard","inventory","orders","timetracker","hr"],
+  commercial_gw:  ["dashboard","timetracker","hr"],
+  creative_hod:   ["dashboard","proposals","creative","execution","timetracker","hr"],
+  creative:       ["dashboard","creative","execution","timetracker","hr"],
+  finance_hod:    ["dashboard","invoicing","finance","collection","reports","timetracker","hr"],
+  finance:        ["dashboard","invoicing","finance","collection","timetracker","hr"],
+  driver_hra:     ["hr"],
+};
+
+const STAFF_ROLE_MAP = {
+  sai:"owner", michelle:"michelle",
+  natasha:"sales", karan:"sales", azrina:"sales_support",
+  shazia:"channel_hod", meiyin:"channel", nicole:"channel",
+  yash:"marketing",
+  kavita:"operations",
+  mahen:"commercial_hod", najwa:"commercial", apit:"commercial_gw",
+  aliff:"creative_hod", nazri:"creative", shariff:"creative",
+  phylicia:"finance_hod", nik:"finance", nazreey:"driver_hra",
+};
+
+const DEPT_GROUPS_STAFF = [
+  { dept:"Owner",          color:"#0C1F3F", staff:["sai"] },
+  { dept:"Top Management", color:"#6D28D9", staff:["michelle"] },
+  { dept:"Sales",          color:"#0D9488", staff:["natasha","karan","azrina"] },
+  { dept:"Channel",        color:"#EA580C", staff:["shazia","meiyin","nicole"] },
+  { dept:"Marketing",      color:"#7C3AED", staff:["yash"] },
+  { dept:"Operations",     color:"#DC2626", staff:["kavita"] },
+  { dept:"Commercial",     color:"#D97706", staff:["mahen","najwa","apit"] },
+  { dept:"Creative",       color:"#16A34A", staff:["aliff","nazri","shariff"] },
+  { dept:"Finance",        color:"#2563EB", staff:["phylicia","nik","nazreey"] },
+];
+
+// ─── SCREEN: HR HUB ───────────────────────────────────────────────
+function HRHub({staffKey="natasha"}){
+  const [tab,setTab]=useState("dashboard");
+  const [wishModal,setWishModal]=useState(false);
+  const [wishInput,setWishInput]=useState("");
+  const [wishCat,setWishCat]=useState("Office");
+  const [wishes,setWishes]=useState([
+    {id:1,text:"Standing desk option for creative team",cat:"Office",votes:7,voted:false,by:"Aliff",dept:"Creative"},
+    {id:2,text:"Figma Pro subscription for design team",cat:"Tools",votes:5,voted:false,by:"Nazri",dept:"Creative"},
+    {id:3,text:"Monthly team lunch — rotating restaurant",cat:"Team",votes:9,voted:false,by:"Natasha",dept:"Sales"},
+    {id:4,text:"Adobe Creative Cloud upgrade",cat:"Tools",votes:6,voted:false,by:"Shariff",dept:"Creative"},
+    {id:5,text:"Presentation skills training",cat:"Training",votes:4,voted:false,by:"Yash",dept:"Marketing"},
+    {id:6,text:"Friday afternoon half-day once a month",cat:"Team",votes:11,voted:false,by:"Karan",dept:"Sales"},
+  ]);
+  const [pantrySelections,setPantrySelections]=useState({});
+  const [jobModal,setJobModal]=useState(null);
+  const [applicantModal,setApplicantModal]=useState(null);
+  const profile = STAFF_PROFILES[staffKey]||STAFF_PROFILES.natasha;
+  const roleType = STAFF_ROLE_MAP[staffKey]||"sales";
+  const isManagement = ["owner","michelle","kavita","operations","commercial_hod","finance_hod","creative_hod","channel_hod"].includes(staffKey)||["owner","michelle","kavita","operations","commercial_hod","finance_hod","creative_hod","channel_hod"].includes(roleType);
+  const pantryBudget = 50;
+  const pantrySpent = Object.values(pantrySelections).reduce((a,v)=>a+v,0);
+
+  const pantryCategories=[
+    {id:"hot",label:"☕ Hot Drinks",desc:"Coffee, tea, Milo, 3-in-1, hot chocolate",price:8,unit:"per box"},
+    {id:"cold",label:"🥤 Cold Drinks",desc:"Isotonic, juice, mineral water, sparkling",price:6,unit:"per pack"},
+    {id:"savoury",label:"🍟 Savoury Snacks",desc:"Chips, crackers, popcorn, seaweed",price:5,unit:"per bag"},
+    {id:"sweet",label:"🍪 Sweet Snacks",desc:"Biscuits, cookies, chocolate, wafers",price:5,unit:"per pack"},
+    {id:"healthy",label:"🥜 Healthy Options",desc:"Mixed nuts, granola bars, dried fruits, seeds",price:7,unit:"per bag"},
+    {id:"instant",label:"🍜 Instant Meals",desc:"Instant noodles, oat packets, cup soup",price:4,unit:"per pack"},
+    {id:"condiments",label:"🧴 Pantry Essentials",desc:"Sugar, creamer, salt, pepper, sauces",price:5,unit:"per item"},
+  ];
+
+  const jobOpenings=[
+    {id:1,title:"Head of Making Things Work",dept:"Operations",type:"Head",status:"Open",posted:"May 10",applicants:3,
+     desc:"We need someone who makes chaos look like strategy. Reporting to Kavita. Must be able to turn 'urgent' into 'done'.",
+     requirements:["5+ years in operations or similar chaos management","Calm under fire","Excel in Excel (literally)","Can read a room and a report"],
+     candidates:[
+       {name:"Ahmad Firdaus",exp:"6 years Ops Director",fit:88,summary:"Strong operations background at 2 media agencies. Managed 40-person team. Excellent process documentation.",strengths:["Cross-dept coordination","Budget management","Crisis resolution"],concerns:["Limited digital marketing exposure"],verdict:"Strong candidate — recommend interview"},
+       {name:"Priya Subramaniam",exp:"4 years Senior Ops Manager",fit:76,summary:"Fast-growing startup background. Built SOPs from scratch. High energy, strong communicator.",strengths:["SOP development","Vendor management","Tech-savvy"],concerns:["Shorter tenure, may seek growth quickly"],verdict:"Good potential — culture fit interview needed"},
+     ]},
+    {id:2,title:"Director of Common Sense Operations",dept:"Management",type:"Director",status:"Open",posted:"May 8",applicants:2,
+     desc:"Someone who can diplomatically say 'no' to bad ideas while making everyone feel heard. Reports to Sai.",
+     requirements:["10+ years leadership","High EQ essential","Strategy + execution balance","Has survived at least 2 company pivots"],
+     candidates:[
+       {name:"Ravi Krishnamurthy",exp:"12 years GMD",fit:91,summary:"Veteran of 3 agency groups. Known for building high-performance cultures. Excellent stakeholder management.",strengths:["Strategic clarity","Team development","Calm leadership"],concerns:["May be overqualified — retention risk"],verdict:"Top candidate — fast-track interview"},
+     ]},
+    {id:3,title:"Automation Witch Doctor",dept:"Technology",type:"Specialist",status:"Open",posted:"May 5",applicants:5,
+     desc:"You automate things normal people accept as manual forever. If you've ever built a Make.com flow that saves 10 hours/week, you're who we need.",
+     requirements:["Proficient in Make.com, Zapier, or n8n","Experience with APIs and webhooks","AI tools enthusiast","Can explain tech to non-tech people without sighing"],
+     candidates:[
+       {name:"Lim Wei Ting",exp:"3 years Automation Engineer",fit:94,summary:"Built 50+ Make.com automations at fintech company. Also comfortable with Python and Airtable.",strengths:["Make.com expert","AI integration","Fast learner"],concerns:["No media industry experience"],verdict:"Hire immediately"},
+       {name:"Kevin Raj",exp:"2 years Digital Operations",fit:79,summary:"Strong Zapier user, has automated HR and finance workflows. Good communicator.",strengths:["Non-technical stakeholder management","HubSpot CRM integration"],concerns:["Limited Make.com, more Zapier-focused"],verdict:"Good backup option"},
+     ]},
+    {id:4,title:"Others — Open Category",dept:"TBD",type:"Others",status:"Open",posted:"—",applicants:0,
+     desc:"Future roles that don't fit the existing categories. Use this slot for emerging or ad-hoc hiring needs.",
+     requirements:["TBD based on role","Will be updated when position is defined"],
+     candidates:[]},
+  ];
+
+  const performanceData = {
+    sai:      {billable:95,target:110,ontime:98,quality:92,ai_adoption:88,score:97},
+    michelle: {billable:82,target:105,ontime:90,quality:88,ai_adoption:75,score:89},
+    natasha:  {billable:78,target:95,ontime:88,quality:82,ai_adoption:71,score:83},
+    karan:    {billable:72,target:82,ontime:85,quality:78,ai_adoption:65,score:77},
+    azrina:   {billable:85,target:null,ontime:92,quality:89,ai_adoption:70,score:84},
+    shazia:   {billable:80,target:88,ontime:91,quality:85,ai_adoption:76,score:84},
+    meiyin:   {billable:75,target:79,ontime:87,quality:80,ai_adoption:68,score:78},
+    nicole:   {billable:73,target:75,ontime:89,quality:81,ai_adoption:66,score:77},
+    yash:     {billable:70,target:72,ontime:84,quality:83,ai_adoption:79,score:78},
+    kavita:   {billable:88,target:102,ontime:94,quality:91,ai_adoption:85,score:92},
+    mahen:    {billable:86,target:98,ontime:93,quality:90,ai_adoption:82,score:90},
+    najwa:    {billable:74,target:80,ontime:86,quality:79,ai_adoption:67,score:77},
+    apit:     {billable:65,target:null,ontime:88,quality:75,ai_adoption:55,score:71},
+    aliff:    {billable:82,target:90,ontime:87,quality:93,ai_adoption:78,score:86},
+    nazri:    {billable:76,target:82,ontime:85,quality:88,ai_adoption:70,score:80},
+    shariff:  {billable:74,target:80,ontime:83,quality:86,ai_adoption:68,score:78},
+    phylicia: {billable:89,target:96,ontime:95,quality:92,ai_adoption:84,score:91},
+    nik:      {billable:82,target:88,ontime:92,quality:88,ai_adoption:78,score:86},
+    nazreey:  {billable:null,target:null,ontime:94,quality:90,ai_adoption:45,score:76},
+  };
+  const perf = performanceData[staffKey]||performanceData.natasha;
+
+  const tabs=[
+    {id:"dashboard",l:"My Dashboard"},
+    {id:"leave",l:"Leave & Claims"},
+    {id:"wishlist",l:"Staff Wishlist"},
+    {id:"pantry",l:"Pantry RM50"},
+    ...(isManagement||["owner","michelle","kavita","aliff","phylicia"].includes(staffKey)?[{id:"jobs",l:"Job Openings"}]:[]),
+  ];
+
+  const vote=(id)=>setWishes(w=>w.map(x=>x.id===id?{...x,votes:x.voted?x.votes-1:x.votes+1,voted:!x.voted}:x));
+  const addWish=()=>{if(!wishInput.trim())return;setWishes(w=>[...w,{id:Date.now(),text:wishInput,cat:wishCat,votes:0,voted:false,by:profile.name,dept:profile.dept}]);setWishInput("");setWishModal(false);};
+
+  return(
+    <div className="flex flex-col gap-4">
+      {/* Header */}
+      <div className="rounded-2xl p-5 flex items-center gap-4" style={{background:`linear-gradient(135deg,${profile.color},${profile.color}CC)`}}>
+        <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-black text-lg flex-shrink-0" style={{background:"rgba(255,255,255,0.2)"}}>{profile.avatar}</div>
+        <div className="flex-1"><div className="text-white font-black text-lg">{profile.name}</div><div className="text-white/70 text-sm">{profile.dept} · HR Hub</div><div className="text-white/50 text-xs italic mt-0.5">"{profile.quote}"</div></div>
+      </div>
+
+      {/* Tabs */}
+      <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
+        {tabs.map(t=>(
+          <button key={t.id} onClick={()=>setTab(t.id)} className="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-bold transition-all" style={{background:tab===t.id?profile.color:"#F1F5F9",color:tab===t.id?"#fff":"#475569"}}>{t.l}</button>
+        ))}
+      </div>
+
+      {/* MY DASHBOARD TAB */}
+      {tab==="dashboard"&&(
+        <div className="flex flex-col gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {[
+              {l:"Performance Score",v:`${perf.score}/100`,color:perf.score>=85?T.green:perf.score>=70?T.amber:T.red},
+              {l:"Billable Rate",v:perf.billable?`${perf.billable}%`:"N/A",color:T.purple},
+              {l:"On-Time Delivery",v:`${perf.ontime}%`,color:T.teal},
+              {l:"AI Adoption",v:`${perf.ai_adoption}%`,color:T.orange},
+            ].map((m,i)=>(
+              <Card key={i} className="p-4">
+                <div className="text-xl font-black" style={{color:m.color||"#0F172A"}}>{m.v}</div>
+                <div className="text-xs text-gray-500 mt-1">{m.l}</div>
+              </Card>
+            ))}
+          </div>
+
+          {/* Performance Index */}
+          <Card className="p-5">
+            <div className="flex items-center justify-between mb-4">
+              <div className="font-black text-gray-900">Personalised Performance Index</div>
+              <div className="text-2xl font-black" style={{color:perf.score>=85?T.green:perf.score>=70?T.amber:T.red}}>{perf.score}/100</div>
+            </div>
+            {[
+              {l:"Billable Hours %",v:perf.billable,w:25,note:"vs team target"},
+              {l:"Target Achievement",v:perf.target,w:25,note:profile.noTarget?"No sales target":"vs monthly target"},
+              {l:"On-Time Delivery",v:perf.ontime,w:20,note:"execution checklist"},
+              {l:"Proposal Quality",v:perf.quality,w:15,note:"fewer revisions = higher score"},
+              {l:"AI / Automation Adoption",v:perf.ai_adoption,w:15,note:"system usage rate"},
+            ].map((m,i)=>(
+              <div key={i} className="mb-3">
+                <div className="flex items-center justify-between mb-1">
+                  <div className="text-sm font-semibold text-gray-700">{m.l} <span className="text-xs text-gray-400">({m.w}% weight)</span></div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-gray-400">{m.note}</span>
+                    <span className="text-sm font-black" style={{color:!m.v?"#9CA3AF":m.v>=80?T.green:m.v>=60?T.amber:T.red}}>{m.v?`${m.v}%`:"N/A"}</span>
+                  </div>
+                </div>
+                <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <div style={{width:`${m.v||0}%`,background:!m.v?"#E5E7EB":m.v>=80?T.green:m.v>=60?T.amber:T.red,height:"100%",borderRadius:9,transition:"width 0.5s"}}/>
+                </div>
+              </div>
+            ))}
+          </Card>
+
+          {/* Complaint/Feedback — Coming Soon */}
+          <Card className="p-5 border-2 border-dashed border-gray-200">
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-xl flex-shrink-0">🔒</div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="font-bold text-gray-700">Feedback & Complaint — AI Triage</span>
+                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-purple-100 text-purple-700">Final Rollout</span>
+                </div>
+                <div className="text-sm text-gray-500 leading-relaxed">Submit workplace feedback or complaints. AI classifies severity — minor cases get AI guidance, serious cases go directly to Sai with full confidentiality. Coming in the next phase.</div>
+              </div>
+            </div>
+          </Card>
+        </div>
+      )}
+
+      {/* LEAVE & CLAIMS TAB */}
+      {tab==="leave"&&(
+        <div className="flex flex-col gap-4">
+          <Card className="p-5">
+            <div className="font-black text-gray-900 mb-1">HRMS — AutoCount Direct Links</div>
+            <div className="text-sm text-gray-500 mb-4">Opens AutoCount HR system in a new tab. Login with your staff credentials.</div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {[
+                {icon:"🏖️",title:"Apply Leave",desc:"Annual, medical, emergency, replacement leave",url:"#autocount-leave",color:T.teal},
+                {icon:"🧾",title:"Submit Expense Claim",desc:"Business travel, meals, stationery, miscellaneous",url:"#autocount-claim",color:T.purple},
+                {icon:"💰",title:"View Payslip",desc:"Monthly salary, deductions, allowances, EPF",url:"#autocount-payslip",color:T.green},
+                {icon:"📊",title:"Leave Balance",desc:"Check remaining annual, medical, and other leaves",url:"#autocount-balance",color:T.orange},
+                ...(profile.driverOnly?[{icon:"🚗",title:"Mileage Claim",desc:"Submit vehicle mileage for reimbursement",url:"#autocount-mileage",color:"#6B7280"},{icon:"📋",title:"Driver Log",desc:"Daily trip log and scheduling",url:"#autocount-driverlog",color:"#6B7280"}]:[]),
+              ].map((link,i)=>(
+                <button key={i} onClick={()=>window.open(link.url,"_blank")} className="flex items-start gap-3 p-4 rounded-xl border-2 border-gray-100 hover:border-purple-300 text-left transition-all" style={{cursor:"pointer"}}>
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0" style={{background:link.color+"15"}}>{link.icon}</div>
+                  <div><div className="font-bold text-gray-900 text-sm">{link.title}</div><div className="text-xs text-gray-500 mt-0.5">{link.desc}</div></div>
+                  <ArrowUpRight size={14} className="text-gray-400 ml-auto mt-1 flex-shrink-0"/>
+                </button>
+              ))}
+            </div>
+          </Card>
+          <Card className="p-4 bg-blue-50 border border-blue-100">
+            <div className="text-sm font-bold text-blue-800 mb-1">⚠️ Important</div>
+            <div className="text-sm text-blue-700">All HR transactions (leave, claims, payroll) are processed in AutoCount. This system provides quick access links only. For issues, contact Phylicia or Nik in Finance.</div>
+          </Card>
+        </div>
+      )}
+
+      {/* STAFF WISHLIST TAB */}
+      {tab==="wishlist"&&(
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="font-black text-gray-900">Staff Wishlist & Objectives Vote</div>
+              <div className="text-xs text-gray-500">Submit ideas. Everyone votes. Top wishes reviewed by Sai quarterly.</div>
+            </div>
+            <button onClick={()=>setWishModal(true)} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm text-white font-bold" style={{background:profile.color}}><Plus size={13}/>Add Wish</button>
+          </div>
+          {["Office","Tools","Training","Team","Business"].map(cat=>{
+            const catWishes=wishes.filter(w=>w.cat===cat).sort((a,b)=>b.votes-a.votes);
+            if(!catWishes.length) return null;
+            return(
+              <Card key={cat} className="overflow-hidden">
+                <div className="px-4 py-3 border-b border-gray-100 font-bold text-gray-700 text-sm">
+                  {{"Office":"🏢 Office Improvement","Tools":"🛠️ Tools & Software","Training":"📚 Training & Skills","Team":"🎉 Team Activities","Business":"💡 Business Ideas"}[cat]}
+                </div>
+                {catWishes.map((w,i)=>(
+                  <div key={w.id} className="flex items-center gap-3 px-4 py-3 border-b border-gray-50 last:border-0">
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-semibold text-gray-800">{w.text}</div>
+                      <div className="text-xs text-gray-400 mt-0.5">by {w.by} · {w.dept}</div>
+                    </div>
+                    <button onClick={()=>vote(w.id)} className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-sm font-bold transition-all" style={{background:w.voted?profile.color+"15":"#F8FAFC",color:w.voted?profile.color:"#475569",border:`1px solid ${w.voted?profile.color+"44":"#E2E8F0"}`}}>
+                      👍 {w.votes}
+                    </button>
+                  </div>
+                ))}
+              </Card>
+            );
+          })}
+          {wishModal&&(
+            <div className="fixed inset-0 bg-black/40 flex items-end md:items-center justify-center z-50 p-4">
+              <div className="bg-white rounded-2xl w-full max-w-md p-5 shadow-2xl">
+                <div className="flex items-center justify-between mb-4"><span className="font-black text-gray-900">Add to Wishlist</span><button onClick={()=>setWishModal(false)} className="w-8 h-8 rounded-xl bg-gray-100 flex items-center justify-center"><X size={14}/></button></div>
+                <div className="mb-3"><div className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">Category</div>
+                  <div className="flex gap-2 flex-wrap">{["Office","Tools","Training","Team","Business"].map(c=><button key={c} onClick={()=>setWishCat(c)} className="px-3 py-1.5 rounded-xl text-xs font-bold border-2 transition-all" style={{borderColor:wishCat===c?profile.color:"#E2E8F0",background:wishCat===c?profile.color+"10":"#fff",color:wishCat===c?profile.color:"#475569"}}>{c}</button>)}</div>
+                </div>
+                <div className="mb-4"><div className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">Your Wish / Idea</div><textarea value={wishInput} onChange={e=>setWishInput(e.target.value)} className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none resize-none" rows={3} placeholder="What would make work better or more fun?"/></div>
+                <div className="flex gap-3"><button onClick={addWish} className="flex-1 py-3 rounded-xl text-white font-bold text-sm" style={{background:profile.color}}>Submit Wish</button><button onClick={()=>setWishModal(false)} className="flex-1 py-3 rounded-xl font-bold text-sm border border-gray-200 text-gray-600">Cancel</button></div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* PANTRY TAB */}
+      {tab==="pantry"&&(
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center justify-between p-4 rounded-2xl" style={{background:`linear-gradient(135deg,${profile.color}15,${profile.color}08)`,border:`1px solid ${profile.color}30`}}>
+            <div><div className="font-black text-gray-900">Quarterly Pantry Budget</div><div className="text-sm text-gray-500">RM 50.00 per person · Q2 2025 (Apr–Jun)</div></div>
+            <div className="text-right">
+              <div className="text-2xl font-black" style={{color:pantrySpent>pantryBudget?T.red:pantrySpent>pantryBudget*0.8?T.amber:T.green}}>RM {pantrySpent.toFixed(0)}</div>
+              <div className="text-xs text-gray-500">of RM {pantryBudget} spent</div>
+              <div className="w-32 h-1.5 bg-gray-100 rounded-full overflow-hidden mt-1">
+                <div style={{width:`${Math.min(pantrySpent/pantryBudget*100,100)}%`,background:pantrySpent>pantryBudget?T.red:pantrySpent>pantryBudget*0.8?T.amber:T.green,height:"100%",borderRadius:9}}/>
+              </div>
+            </div>
+          </div>
+          <div className="text-xs text-gray-500 bg-amber-50 border border-amber-100 rounded-xl px-3 py-2.5">📌 Select by category, not brand. Pantry coordinator will purchase based on availability and best value. Selections are submitted quarterly.</div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {pantryCategories.map(cat=>{
+              const qty=pantrySelections[cat.id]||0;
+              const subtotal=qty*cat.price;
+              return(
+                <Card key={cat.id} className="p-4">
+                  <div className="flex items-start justify-between gap-3 mb-2">
+                    <div className="flex-1 min-w-0">
+                      <div className="font-bold text-gray-900 text-sm">{cat.label}</div>
+                      <div className="text-xs text-gray-500 mt-0.5">{cat.desc}</div>
+                      <div className="text-xs text-gray-400 mt-0.5">~RM {cat.price} {cat.unit}</div>
+                    </div>
+                    {subtotal>0&&<div className="text-sm font-black flex-shrink-0" style={{color:profile.color}}>RM {subtotal}</div>}
+                  </div>
+                  <div className="flex items-center gap-3 mt-3">
+                    <button onClick={()=>setPantrySelections(s=>({...s,[cat.id]:Math.max(0,(s[cat.id]||0)-1)})) } className="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center text-gray-500 font-bold hover:bg-gray-50">−</button>
+                    <span className="text-sm font-black text-gray-900 w-6 text-center">{qty}</span>
+                    <button onClick={()=>{if(pantrySpent+cat.price<=pantryBudget)setPantrySelections(s=>({...s,[cat.id]:(s[cat.id]||0)+1}));}} className="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center text-gray-500 font-bold hover:bg-gray-50" disabled={pantrySpent+cat.price>pantryBudget}>+</button>
+                    <div className="flex-1 text-xs text-gray-400">{qty>0?`${qty}× selected`:""}</div>
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
+          {pantrySpent>0&&(
+            <button className="w-full py-3 rounded-xl text-white font-bold text-sm" style={{background:profile.color}}>Submit Pantry Selection — RM {pantrySpent.toFixed(0)} / RM {pantryBudget}</button>
+          )}
+        </div>
+      )}
+
+      {/* JOB OPENINGS TAB */}
+      {tab==="jobs"&&(
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center justify-between">
+            <div><div className="font-black text-gray-900">Job / Position Openings</div><div className="text-xs text-gray-500">Create, post, and track applicants from one place</div></div>
+            <button className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm text-white font-bold" style={{background:profile.color}}><Plus size={13}/>New Position</button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {jobOpenings.map((job,i)=>(
+              <Card key={job.id} className="p-4 cursor-pointer hover:shadow-md transition-shadow" onClick={()=>setJobModal(job)}>
+                <div className="flex items-start justify-between gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0" style={{background:["#EDE9FE","#DCFCE7","#FEF3C7","#F3F4F6"][i]}}>{["🏆","🎯","🪄","📂"][i]}</div>
+                  <div className="flex flex-col items-end gap-1"><Bdg t={job.status} c={job.status==="Open"?"green":"gray"}/><span className="text-xs text-gray-400">{job.applicants} applicants</span></div>
+                </div>
+                <div className="font-bold text-gray-900 text-sm mb-1">{job.title}</div>
+                <div className="text-xs text-gray-500 mb-2">{job.dept} · {job.type} · Posted {job.posted}</div>
+                <div className="text-xs text-gray-600 line-clamp-2">{job.desc}</div>
+                <div className="mt-3 flex gap-2">
+                  <button className="flex-1 py-2 text-xs font-bold rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50">Share to Job Sites</button>
+                  <button className="flex-1 py-2 text-xs font-bold rounded-lg text-white" style={{background:profile.color}}>View Applicants</button>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* JOB DETAIL MODAL */}
+      {jobModal&&(
+        <div className="fixed inset-0 bg-black/40 flex items-end md:items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl w-full max-w-2xl shadow-2xl max-h-[90vh] flex flex-col overflow-hidden">
+            <div className="flex items-center justify-between p-5 border-b border-gray-100 flex-shrink-0">
+              <div><div className="font-black text-gray-900 text-lg">{jobModal.title}</div><div className="text-sm text-gray-500">{jobModal.dept} · {jobModal.applicants} applicants</div></div>
+              <button onClick={()=>setJobModal(null)} className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center"><X size={14}/></button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-5 flex flex-col gap-4">
+              <div className="bg-gray-50 rounded-xl p-4"><div className="font-bold text-gray-700 text-sm mb-2">Job Description</div><div className="text-sm text-gray-600 leading-relaxed">{jobModal.desc}</div></div>
+              <div className="bg-gray-50 rounded-xl p-4"><div className="font-bold text-gray-700 text-sm mb-2">Requirements</div>{jobModal.requirements.map((r,i)=><div key={i} className="flex items-start gap-2 text-sm text-gray-600 mb-1.5"><CheckCircle size={13} className="text-green-500 mt-0.5 flex-shrink-0"/>{r}</div>)}</div>
+              {jobModal.candidates.length>0&&(
+                <div>
+                  <div className="font-bold text-gray-900 mb-3">🤖 AI Applicant Insights</div>
+                  {jobModal.candidates.map((c,i)=>(
+                    <Card key={i} className="p-4 mb-3 cursor-pointer" onClick={()=>setApplicantModal(c)}>
+                      <div className="flex items-start justify-between gap-3 mb-3">
+                        <div className="flex items-center gap-3"><div className="w-9 h-9 rounded-full bg-purple-100 flex items-center justify-center font-bold text-purple-700 text-sm flex-shrink-0">{c.name.split(" ").map(n=>n[0]).join("").slice(0,2)}</div><div><div className="font-bold text-gray-900 text-sm">{c.name}</div><div className="text-xs text-gray-500">{c.exp}</div></div></div>
+                        <div className="flex items-center gap-2 flex-shrink-0"><div className="text-lg font-black" style={{color:c.fit>=85?T.green:c.fit>=70?T.amber:T.red}}>{c.fit}%</div><div className="text-xs text-gray-400">fit</div></div>
+                      </div>
+                      <div className="text-xs text-gray-600 leading-relaxed mb-2">{c.summary}</div>
+                      <div className="flex items-center justify-between"><div className="text-xs font-bold" style={{color:c.fit>=85?T.green:T.amber}}>{c.verdict}</div><button className="text-xs text-purple-600 font-semibold">Full Analysis →</button></div>
+                    </Card>
+                  ))}
+                </div>
+              )}
+              {jobModal.candidates.length===0&&<div className="text-center py-8 text-gray-400"><div className="text-3xl mb-2">📭</div><div className="text-sm font-semibold">No applicants yet</div><div className="text-xs mt-1">Share the position to job sites to start receiving applications</div></div>}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* APPLICANT DETAIL MODAL */}
+      {applicantModal&&(
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60] p-4">
+          <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-5 border-b border-gray-100">
+              <div className="font-black text-gray-900">{applicantModal.name}</div>
+              <button onClick={()=>setApplicantModal(null)} className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center"><X size={14}/></button>
+            </div>
+            <div className="p-5 flex flex-col gap-3">
+              <div className="flex items-center justify-between p-3 rounded-xl" style={{background:applicantModal.fit>=85?"#DCFCE7":applicantModal.fit>=70?"#FEF3C7":"#FEE2E2"}}>
+                <span className="text-sm font-bold text-gray-800">Role Suitability</span>
+                <span className="text-xl font-black" style={{color:applicantModal.fit>=85?T.green:applicantModal.fit>=70?T.amber:T.red}}>{applicantModal.fit}%</span>
+              </div>
+              {[{l:"Summary",v:applicantModal.summary},{l:"Key Strengths",v:applicantModal.strengths.join(" · ")},{l:"Possible Concerns",v:applicantModal.concerns.join(" · ")},{l:"Recommended Next Step",v:applicantModal.verdict}].map((s,i)=>(
+                <div key={i} className="bg-gray-50 rounded-xl p-3"><div className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">{s.l}</div><div className="text-sm text-gray-700 leading-relaxed">{s.v}</div></div>
+              ))}
+              <div className="flex gap-3 mt-2">
+                <button className="flex-1 py-3 rounded-xl text-white font-bold text-sm" style={{background:T.green}}>✅ Shortlist</button>
+                <button className="flex-1 py-3 rounded-xl font-bold text-sm border border-gray-200 text-gray-600">Schedule Interview</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+
+// ─── ROLE CONFIG ─────────────────────────────────────────────────
+// ROLES is now derived from STAFF_PROFILES + ROLE_SCREENS
+const ROLES = Object.fromEntries(
+  Object.entries(STAFF_PROFILES).map(([key,p])=>[key,{
+    label: p.name,
+    dept:  p.dept,
+    color: p.color,
+    avatar:p.avatar,
+    screens: ROLE_SCREENS[STAFF_ROLE_MAP[key]]||ROLE_SCREENS.sales,
+    canSeeSupplierCost: p.canSeeSupplierCost,
+    noPricing: p.noPricing,
+    driverOnly: p.driverOnly,
+    noTarget: p.noTarget,
+  }])
+);
 
 // ─── NAV CONFIG ───────────────────────────────────────────────────
 const GROUPS=[
@@ -1649,6 +2595,7 @@ const GROUPS=[
                                {id:"invoicing",   icon:<Receipt size={16}/>,         label:"Invoicing"},
                                {id:"finance",     icon:<DollarSign size={16}/>,      label:"Finance Dashboard"},
                                {id:"collection",  icon:<Repeat size={16}/>,          label:"Collection & Retention"}]},
+  {label:"PEOPLE",      items:[{id:"hr",          icon:<Users size={16}/>,          label:"HR Hub"}]},
   {label:"ANALYTICS",  items:[{id:"reports",     icon:<BarChart3 size={16}/>,       label:"Reports"}]},
 ];
 
@@ -1733,7 +2680,7 @@ const AI_SUGGESTIONS = {
   ],
 };
 
-const SCREENS = {owner:OwnerView,dashboard:Dashboard,leads:Leads,brief:Brief,proposals:Proposals,pipeline:Pipeline,creative:Creative,inventory:Inventory,orders:Orders,execution:Execution,timetracker:TimeTracker,invoicing:Invoicing,finance:Finance,collection:Collection,reports:Reports};
+const SCREENS = {owner:OwnerView,dashboard:Dashboard,hr:(({role})=><HRHub staffKey={role}/>),leads:Leads,brief:Brief,proposals:Proposals,pipeline:Pipeline,creative:Creative,inventory:Inventory,orders:Orders,execution:Execution,timetracker:TimeTracker,invoicing:Invoicing,finance:Finance,collection:Collection,reports:Reports};
 
 
 // ─── AI ASSISTANT PANEL ───────────────────────────────────────────
@@ -1819,7 +2766,7 @@ function AiPanel({screen, role, onClose}){
 // ─── APP ──────────────────────────────────────────────────────────
 export default function App(){
   const [screen,   setScreen]   = useState("dashboard");
-  const [role,     setRole]     = useState("admin");
+  const [role,     setRole]     = useState("natasha");
   const [roleOpen, setRoleOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
   const [aiOpen,   setAiOpen]   = useState(false);
@@ -1859,15 +2806,26 @@ export default function App(){
             </button>
             {roleOpen&&(
               <div className="absolute top-full left-0 right-0 mt-1 rounded-xl overflow-hidden shadow-2xl z-50" style={{background:"#1a3060",border:"1px solid rgba(255,255,255,0.12)"}}>
-                {Object.entries(ROLES).map(([key,r])=>(
-                  <button key={key} onClick={()=>switchRole(key)} className="w-full flex items-center gap-2.5 px-3 py-2.5 hover:bg-white/10 transition-all" style={{background:role===key?"rgba(255,255,255,0.12)":"transparent"}}>
-                    <Av i={r.avatar} c={r.color} s={22}/>
-                    <div className="flex-1 text-left">
-                      <div className="text-sm font-semibold" style={{color:role===key?"#fff":"rgba(255,255,255,0.65)"}}>{r.label}</div>
-                      <div className="text-xs" style={{color:"rgba(255,255,255,0.35)"}}>{r.screens.length} modules</div>
-                    </div>
-                    {role===key&&<CheckCircle size={13} className="text-green-400 flex-shrink-0"/>}
-                  </button>
+                {typeof DEPT_GROUPS_STAFF!=="undefined"&&DEPT_GROUPS_STAFF.map(group=>(
+                  <div key={group.dept}>
+                    <div className="px-3 py-1 text-xs font-black uppercase tracking-widest" style={{color:"rgba(255,255,255,0.2)"}}>{group.dept}</div>
+                    {group.staff.map(key=>{
+                      const r=ROLES[key];
+                      const sp=STAFF_PROFILES[key];
+                      if(!r)return null;
+                      return(
+                        <button key={key} onClick={()=>switchRole(key)} className="w-full flex items-center gap-2 px-3 py-2 hover:bg-white/10 transition-all" style={{background:role===key?"rgba(255,255,255,0.12)":"transparent"}}>
+                          <Av i={r.avatar} c={r.color} s={20}/>
+                          <div className="flex-1 text-left min-w-0">
+                            <div className="text-xs font-semibold truncate" style={{color:role===key?"#fff":"rgba(255,255,255,0.65)"}}>{r.label}</div>
+                            {sp?.noTarget&&<div className="text-xs" style={{color:"rgba(255,255,255,0.25)"}}>No target</div>}
+                            {sp?.noPricing&&<div className="text-xs" style={{color:"rgba(255,255,255,0.25)"}}>No pricing</div>}
+                          </div>
+                          {role===key&&<CheckCircle size={11} className="text-green-400 flex-shrink-0"/>}
+                        </button>
+                      );
+                    })}
+                  </div>
                 ))}
               </div>
             )}
@@ -1918,12 +2876,21 @@ export default function App(){
             {roleOpen&&(
               <div className="absolute top-full right-0 mt-2 w-52 rounded-2xl overflow-hidden shadow-2xl bg-white border border-gray-100 z-50">
                 <div className="px-4 py-3 border-b border-gray-100 text-xs font-black text-gray-400 uppercase tracking-wide">Switch Role</div>
-                {Object.entries(ROLES).map(([key,r])=>(
-                  <button key={key} onClick={()=>switchRole(key)} className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-all" style={{background:role===key?"#F5F3FF":"transparent"}}>
-                    <Av i={r.avatar} c={r.color} s={28}/>
-                    <div className="flex-1 text-left"><div className="text-sm font-semibold text-gray-800">{r.label}</div><div className="text-xs text-gray-400">{r.screens.length} modules</div></div>
-                    {role===key&&<CheckCircle size={14} className="text-purple-500"/>}
-                  </button>
+                {typeof DEPT_GROUPS_STAFF!=="undefined"&&DEPT_GROUPS_STAFF.map(group=>(
+                  <div key={group.dept}>
+                    <div className="px-4 py-1.5 text-xs font-black text-gray-400 uppercase tracking-wide bg-gray-50">{group.dept}</div>
+                    {group.staff.map(key=>{
+                      const r=ROLES[key];
+                      if(!r)return null;
+                      return(
+                        <button key={key} onClick={()=>switchRole(key)} className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 transition-all" style={{background:role===key?"#F5F3FF":"transparent"}}>
+                          <Av i={r.avatar} c={r.color} s={28}/>
+                          <div className="flex-1 text-left min-w-0"><div className="text-sm font-semibold text-gray-800 truncate">{r.label}</div><div className="text-xs text-gray-400">{r.dept}</div></div>
+                          {role===key&&<CheckCircle size={14} className="text-purple-500"/>}
+                        </button>
+                      );
+                    })}
+                  </div>
                 ))}
               </div>
             )}
@@ -1940,7 +2907,7 @@ export default function App(){
 
         {/* CONTENT */}
         <div className="flex-1 overflow-y-auto px-4 py-4 pb-20 md:pb-4">
-          <S go={(id)=>{ if(allowed.includes(id)) setScreen(id); }} role={role}/>
+          <S go={(id)=>{ if(allowed.includes(id)) setScreen(id); }} role={role} staffKey={role}/>
         </div>
 
         {/* Floating AI button — mobile */}
