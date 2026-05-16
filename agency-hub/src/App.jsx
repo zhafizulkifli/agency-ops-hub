@@ -594,13 +594,13 @@ function Proposals(){
     {step:2,label:"Channel Team: Media Selection",dept:"Channel",who:"Shazia",date:"May 2, 10:30AM",detail:"Channel team selected 8 media sites from Master Inventory. 3 highway OOH, 2 digital screens, 1 mall LED, 2 radio stations. Creative brief auto-generated for each site.",status:"done",color:T.teal},
     {step:3,label:"Creative: Superimposed Mockups",dept:"Creative",who:"Nazri",date:"May 3, 2:00PM",detail:"Creative team uploaded superimposed visuals for all 8 sites. Client brand overlaid on actual site photography. 3 design rounds. All mockups attached to proposal.",status:"done",color:T.purple},
     {step:4,label:"Commercial: Pricing & Availability",dept:"Commercial",who:"Mahen",date:"May 4, 9:00AM",detail:"AI Pricing Engine ran on all 8 items. Big Tree quoted RM 18K for ELITE KM14.2 — AI suggested RM 12K. After negotiation: locked at RM 13,800 (23% off). Total campaign cost secured.",status:"done",color:T.orange},
-    {step:5,label:"Internal Review & Approval",dept:"Manager",who:"Sai (Director)",date:"May 5, 3:00PM",detail:"Director reviewed full proposal. GP calculated at 34.2% — above 30% threshold. Approved without special sign-off. Proposal cleared for client submission.",status:"done",color:T.navy},
+    {step:5,label:"Internal Review & Approval",dept:"Manager",who:"Sai (Director)",date:"May 5, 3:00PM",detail:"Director reviewed full proposal. GP calculated at 34.2% — above 30% threshold. Approved without special sign-off. Proposal cleared for client submission.",status:"done",color:T.nav},
     {step:6,label:"AI Auto-Generates PDF Proposal",dept:"System",who:"AI",date:"May 5, 3:05PM",detail:"Branded PDF proposal auto-generated: cover page, campaign rationale, 8 site details with mockups, reach data, pricing summary, timeline, T&Cs. 14 pages.",status:"done",color:T.teal},
     {step:7,label:"Proposal Sent to Client",dept:"Sales",who:"Natasha",date:"May 7, 10:00AM",detail:"PDF sent to Andrew Lim (AEON BIG) via Outlook. AI tracking active. Email opened May 8 at 9:21AM. Viewed for 12 minutes. Auto-follow-up reminder set for May 11.",status:"done",color:T.purple},
     {step:8,label:"Client Revision Request",dept:"Client",who:"Andrew Lim",date:"May 9, 11:00AM",detail:"Client replied: 'Can we swap NST full-page for The Star? Also prefer 40-second radio over 30-second.' AI extracted 2 revision points, tasks auto-created for Channel team. Version incremented to v2.",status:"done",color:T.orange},
     {step:9,label:"Revised Proposal v2",dept:"Channel",who:"Shazia",date:"May 10, 4:00PM",detail:"Swapped NST for The Star (same cost). Radio extended to 40-sec (+RM 8K). Commercial re-confirmed pricing. Director re-approved. New PDF generated and sent.",status:"done",color:T.teal},
     {step:10,label:"Client Approval",dept:"Client",who:"Andrew Lim",date:"May 11, 2:30PM",detail:"Andrew replied: 'Looks great, we'd like to proceed.' AI detected approval keywords. Deal moved to Won. Media Order workflow triggered automatically. Natasha notified.",status:demoStage>=9?"done":"active",color:T.green},
-    {step:11,label:"Media Order → PO → Execution",dept:"Sales → Commercial",who:"Auto-triggered",date:"Pending",detail:"Sales to generate Media Order for client signature. Once signed, Commercial raises PO to vendors. Artwork job sheet auto-created. Execution module activated.",status:demoStage>=10?"done":"pending",color:T.navy},
+    {step:11,label:"Media Order → PO → Execution",dept:"Sales → Commercial",who:"Auto-triggered",date:"Pending",detail:"Sales to generate Media Order for client signature. Once signed, Commercial raises PO to vendors. Artwork job sheet auto-created. Execution module activated.",status:demoStage>=10?"done":"pending",color:T.nav},
   ];
 
   return(
@@ -3480,7 +3480,7 @@ export default function App(){
         {/* Floating AI button — mobile */}
         <button onClick={()=>setAiOpen(true)} className="fixed bottom-20 right-4 md:hidden w-12 h-12 rounded-2xl shadow-lg flex items-center justify-center text-xl z-30" style={{background:"linear-gradient(135deg,#6D28D9,#7C3AED)"}}>🤖</button>
 
-        {/* BOTTOM NAV — mobile, role-filtered */}}
+        {/* BOTTOM NAV — mobile, role-filtered */}
         <div className="fixed bottom-0 left-0 right-0 md:hidden bg-white border-t border-gray-200 z-40" style={{paddingBottom:"env(safe-area-inset-bottom)"}}>
           <div className="flex">
             {mobileItems.map(item=>(
