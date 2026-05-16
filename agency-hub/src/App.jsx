@@ -585,7 +585,7 @@ function Proposals(){
     {title:"AEON BIG – Raya 2026 Campaign",client:"AEON BIG",value:"RM 350K",owner:"Natasha",sent:"May 7",viewed:"Viewed May 8, 9:21AM",stage:"Awaiting Approval",sc:"amber",ver:"v2",c:0},
     {title:"MYDIN – Store Operations Transformation",client:"MYDIN",value:"RM 210K",owner:"Shazia",sent:"May 6",viewed:"Opened May 6, 4:32PM",stage:"Under Review",sc:"blue",ver:"v1",c:1},
     {title:"KK Mart – Inventory & Demand Planning",client:"KK Mart",value:"RM 160K",owner:"Nazri",sent:"May 5",viewed:"Not Viewed",stage:"Submitted",sc:"purple",ver:"v1",c:2},
-    {title:"Jaya Grocer – Pricing Strategy Proposal",client:"Jaya Grocer",value:"RM 190K",owner:"Marcus Tee",sent:"May 3",viewed:"Viewed May 3",stage:"Under Review",sc:"blue",ver:"v3",c:3},
+    {title:"Jaya Grocer – Pricing Strategy Proposal",client:"Jaya Grocer",value:"RM 190K",owner:"Mei Yin",sent:"May 3",viewed:"Viewed May 3",stage:"Under Review",sc:"blue",ver:"v3",c:3},
     {title:"AEON BIG – Marketing Partnership",client:"AEON BIG",value:"RM 120K",owner:"Natasha",sent:"May 1",viewed:"Not Viewed",stage:"Draft",sc:"gray",ver:"v1",c:0},
   ];
 
@@ -1828,7 +1828,7 @@ function Reports(){
           <table className="w-full">
             <thead><tr className="border-b border-gray-100">{["Rep","Revenue","Closed Won","Win Rate","Target Achievement"].map(h=><th key={h} className="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase whitespace-nowrap">{h}</th>)}</tr></thead>
             <tbody className="divide-y divide-gray-50">
-              {[{n:"Natasha",r:"1.61M",c:"920K",w:"38%",a:65},{n:"Mahen",r:"980K",c:"560K",w:"36%",a:60},{n:"Sarah Lim",r:"720K",c:"410K",w:"34%",a:58},{n:"Kai Chen",r:"610K",c:"330K",w:"31%",a:52}].map((r,i)=>(
+              {[{n:"Natasha",r:"1.61M",c:"920K",w:"38%",a:65},{n:"Mahen",r:"980K",c:"560K",w:"36%",a:60},{n:"Azrina",r:"720K",c:"410K",w:"34%",a:58},{n:"Shazia",r:"610K",c:"330K",w:"31%",a:52}].map((r,i)=>(
                 <tr key={i} className="hover:bg-gray-50">
                   <td className="px-4 py-3"><div className="flex items-center gap-2"><Av i={r.n.split(" ").map(n=>n[0]).join("")} c={COLORS[i]} s={26}/><span className="text-sm font-semibold text-gray-800 whitespace-nowrap">{r.n}</span></div></td>
                   <td className="px-4 py-3 text-sm font-black text-gray-900 whitespace-nowrap">RM {r.r}</td>
@@ -3237,7 +3237,7 @@ const AI_SUGGESTIONS = {
   ],
   reports:[
     {type:"insight",icon:"📉",title:"Win rate dropped 5pp",body:"38% this month vs 43% last month. Proposals above RM 200K are closing at only 22%. Consider phased approach.",action:"Analyse deals"},
-    {type:"insight",icon:"🏆",title:"Top performer: Natasha Tan",body:"RM 1.61M revenue, 38% win rate, 65% target achievement. Natasha's proposal style closes 2x faster than team average.",action:"View her proposals"},
+    {type:"insight",icon:"🏆",title:"Top performer: Natasha",body:"RM 1.61M revenue, 38% win rate, 65% target achievement. Natasha's proposal style closes 2x faster than team average.",action:"View her proposals"},
     {type:"tip",icon:"📅",title:"Schedule this report",body:"Get this report delivered to your inbox every Monday 8AM — one click to set up.",action:"Schedule now"},
   ],
   owner:[
