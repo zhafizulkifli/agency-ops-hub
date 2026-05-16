@@ -40,11 +40,11 @@ function Dashboard({go,role="natasha",setModal:setModalProp}){
   const isFinance     = role==="nik";
   const isDriver      = role==="nazreey";
 
+  const sp = typeof STAFF_PROFILES!=="undefined"&&STAFF_PROFILES[role]?STAFF_PROFILES[role]:null;
   return(
     <div className="flex flex-col gap-4">
       {/* Personalised Greeting */}
       {(()=>{
-        const sp=typeof STAFF_PROFILES!=="undefined"&&STAFF_PROFILES[role]?STAFF_PROFILES[role]:null;
         const greeting=sp?.greeting||"Good morning. Let's make today count.";
         const color=sp?.color||"#6D28D9";
         return(
